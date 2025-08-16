@@ -18,7 +18,7 @@ export function OrderSummary() {
         {cartItems.map(item => (
           <div key={item._id} className="flex justify-between items-center text-sm">
             <span className="text-text-color pr-2">{item.title} x {item.cartQuantity}</span>
-            <span className="font-medium text-heading-color whitespace-nowrap">₹{(item.price * item.quantity).toFixed(2)}</span>
+            <span className="font-medium text-heading-color whitespace-nowrap">₹{(item.price * item.cartQuantity).toFixed(2)}</span>
           </div>
         ))}
       </div>
