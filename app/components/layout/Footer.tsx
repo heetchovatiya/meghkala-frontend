@@ -17,15 +17,15 @@ export function Footer() {
               Handcrafted artistry for the modern home.
             </p>
             <div className="flex space-x-4 mt-6">
-              <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-heading-color transition-colors">
+              <a href="https://www.instagram.com/meghkala.in/" target="_blank" rel="noopener noreferrer" className="hover:text-heading-color transition-colors">
                 <Instagram size={24} />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-heading-color transition-colors">
+              {/* <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-heading-color transition-colors">
                 <Facebook size={24} />
               </a>
               <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-heading-color transition-colors">
                 <Twitter size={24} />
-              </a>
+              </a> */}
             </div>
           </div>
 
