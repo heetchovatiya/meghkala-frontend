@@ -95,7 +95,7 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Product Name Input (changed from 'title' back to 'name') */}
-      <Input id="name" name="name" label="Product Name" value={formData.title} onChange={handleChange} required />
+      <Input id="title" name="title" label="Product Name" value={formData.title} onChange={handleChange} required />
       
       {/* Grid for Price and new Quantity Input */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
