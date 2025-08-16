@@ -1,129 +1,106 @@
-
-
 // contexts/CartContext.tsx
 "use client";
 
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { Product } from '@/components/products/ProductCard';
-import * as api from '@/lib/api';
-import { useAuth } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 
 export interface CartItem extends Product {
-  quantity: number;
+  cartQuantity: number;
 }
 
-// ✅ FIX: Add the missing properties to the context's type definition.
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, quantityToAdd?: number) => void; 
   removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, newQuantity: number) => void;
+  updateQuantity: (productId: string, newCartQuantity: number) => void;
   clearCart: () => void;
   cartTotal: number;
   itemCount: number;
-  couponCode: string | null; // Stores the code the user entered
-  applyCouponCode: (code: string) => void; // A simple function to set the code
-  removeCoupon: () => void; // A function to clear the code
+  couponCode: string | null;
+  applyCouponCode: (code: string) => void;
+  removeCoupon: () => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
- // ✅ MODIFIED: State now only holds the coupon code string.
-  const [couponCode, setCouponCode] = useState<string | null>(null);
-
-// Load cart from localStorage on initial render
-  useEffect(() => {
-    const storedCart = localStorage.getItem('shoppingCart');
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
+  // Initialize state safely from localStorage on the client-side
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    if (typeof window !== 'undefined') {
+        const storedCart = localStorage.getItem('shoppingCart');
+        return storedCart ? JSON.parse(storedCart) : [];
     }
-    const storedCoupon = localStorage.getItem('couponCode');
-    if (storedCoupon) {
-        setCouponCode(storedCoupon);
-    }
-  }, []);
+    return [];
+  });
+  
+  const [couponCode, setCouponCode] = useState<string | null>(() => {
+     if (typeof window !== 'undefined') {
+        const storedCoupon = localStorage.getItem('couponCode');
+        return storedCoupon ? storedCoupon : null;
+     }
+     return null;
+  });
 
-  // Save cart to localStorage whenever it changes
+  // useEffects to SAVE data to localStorage
+  useEffect(() => { localStorage.setItem('shoppingCart', JSON.stringify(cartItems)); }, [cartItems]);
   useEffect(() => {
-    localStorage.setItem('shoppingCart', JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  // Save coupon to localStorage whenever it changes
-  useEffect(() => {
-    if (couponCode) {
-        localStorage.setItem('couponCode', couponCode);
-    } else {
-        localStorage.removeItem('couponCode');
-    }
+    if (couponCode) { localStorage.setItem('couponCode', couponCode); } 
+    else { localStorage.removeItem('couponCode'); }
   }, [couponCode]);
 
-const addToCart = (product: Product) => {
+  // This is the single source of truth for all quantity modifications and stock checks.
+  const updateQuantity = (productId: string, newCartQuantity: number) => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item._id === product._id);
-      if (existingItem) {
-        // If item exists, just increase quantity
-        return prevItems.map(item =>
-          item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        // If new item, add it to the cart with quantity 1
-        return [...prevItems, { ...product, quantity: 1 }];
+      const itemToUpdate = prevItems.find(item => item._id === productId);
+      if (!itemToUpdate) return prevItems;
+
+      if (newCartQuantity <= 0) {
+        return prevItems.filter(item => item._id !== productId);
       }
+      
+      if (itemToUpdate.availability === 'IN_STOCK' && itemToUpdate.quantity < newCartQuantity) {
+        // ✅ Use `itemToUpdate.name` for consistency
+        toast.error(`Sorry, only ${itemToUpdate.quantity} of ${itemToUpdate.title} are available.`);
+        return prevItems;
+      }
+
+      return prevItems.map(item =>
+        item._id === productId ? { ...item, cartQuantity: newCartQuantity } : item
+      );
     });
   };
 
-  const removeFromCart = (productId: string) => {
-    setCartItems(prevItems => prevItems.filter(item => item._id !== productId));
-  };
+  // ✅ MODIFIED: This function is now simpler and delegates its logic.
+  const addToCart = (product: Product, quantityToAdd: number = 1) => {
+    // Check if the item already exists in the current state (not inside the updater).
+    const existingItem = cartItems.find(item => item._id === product._id);
 
-  const updateQuantity = (productId: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeFromCart(productId);
+    if (existingItem) {
+      // If the item exists, simply call our robust updateQuantity function.
+      updateQuantity(product._id, existingItem.cartQuantity + quantityToAdd);
     } else {
-      setCartItems(prevItems =>
-        prevItems.map(item =>
-          item._id === productId ? { ...item, quantity: newQuantity } : item
-        )
-      );
+      // If it's a new item, perform a direct stock check first.
+      if (product.availability === 'IN_STOCK' && product.quantity < quantityToAdd) {
+        toast.error(`Sorry, only ${product.quantity} of ${product.title} are available.`);
+        return; // Abort if not enough stock for a new item.
+      }
+      // Add the new item to the cart.
+      setCartItems(prevItems => [...prevItems, { ...product, cartQuantity: quantityToAdd }]);
     }
   };
-  const clearCart = () => {
-    setCartItems([]);
-    setCouponCode(null); // Clear the coupon code as well
-  };
 
+  const removeFromCart = (productId: string) => { setCartItems(prevItems => prevItems.filter(item => item._id !== productId)); };
+  const clearCart = () => { setCartItems([]); setCouponCode(null); };
+  const applyCouponCode = (code: string) => { setCouponCode(code.toUpperCase().trim()); };
+  const removeCoupon = () => { setCouponCode(null); };
   
-
+  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.cartQuantity, 0);
+  const itemCount = cartItems.reduce((count, item) => count + item.cartQuantity, 0);
   
-  
-  const applyCouponCode = (code: string) => {
-    setCouponCode(code.toUpperCase().trim());
-  };
-
-  const removeCoupon = () => {
-    setCouponCode(null);
-  };
-  
-
-  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
-  
-  // The value object is now simpler
   const value = {
-    cartItems,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    cartTotal,
-    itemCount,
-    couponCode,
-    applyCouponCode,
-    removeCoupon,
+    cartItems, addToCart, removeFromCart, updateQuantity, clearCart,
+    cartTotal, itemCount, couponCode, applyCouponCode, removeCoupon,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

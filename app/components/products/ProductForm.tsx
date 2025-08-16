@@ -27,7 +27,7 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
 
   // ✅ FORM STATE ALIGNED WITH THE NEW SCHEMA
   const [formData, setFormData] = useState({
-    name: '', // Kept as 'name'
+    title: '', // Kept as 'name'
     price: '',
     quantity: '', // Added 'quantity'
     description: '',
@@ -43,7 +43,7 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
   useEffect(() => {
     if (initialData) {
       setFormData({
-        name: initialData.name, // Use 'name'
+        title: initialData.title, // Use 'name'
         price: String(initialData.price),
         quantity: String(initialData.quantity), // Add 'quantity'
         description: initialData.description || '',
@@ -53,7 +53,7 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
       });
     } else {
       setFormData({
-        name: '', price: '', quantity: '', description: '', images: [], availability: 'IN_STOCK', category: '',
+        title: '', price: '', quantity: '', description: '', images: [], availability: 'IN_STOCK', category: '',
       });
     }
   }, [initialData]);
@@ -95,7 +95,7 @@ export function ProductForm({ initialData, onSubmit, isSubmitting }: ProductForm
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Product Name Input (changed from 'title' back to 'name') */}
-      <Input id="name" name="name" label="Product Name" value={formData.name} onChange={handleChange} required />
+      <Input id="name" name="name" label="Product Name" value={formData.title} onChange={handleChange} required />
       
       {/* Grid for Price and new Quantity Input */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

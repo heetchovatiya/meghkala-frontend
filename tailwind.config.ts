@@ -22,6 +22,8 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'), // ✅ THIS LINE MUST BE HERE
+  ],
 }
 export default config

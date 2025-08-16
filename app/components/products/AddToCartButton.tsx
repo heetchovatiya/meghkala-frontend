@@ -10,7 +10,7 @@ export function AddToCartButton({ product }: { product: Product }) {
 
   const handleAddToCart = () => {
     addToCart(product);
-    toast.success(`${product.name} added to cart!`);
+    toast.success(`${product.title} added to cart!`);
   };
 
   return (

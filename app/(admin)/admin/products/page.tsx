@@ -44,7 +44,7 @@ export default function AdminProductsPage() {
     // ✅ PAYLOAD TRANSFORMATION: Map frontend `name` to backend `title`.
     // The rest of the fields (images, quantity) now align perfectly.
     const payload = {
-      title: formData.name, // The only mapping we need now
+      title: formData.title, // The only mapping we need now
       description: formData.description,
       price: formData.price,
       category: formData.category,
@@ -113,19 +113,19 @@ export default function AdminProductsPage() {
                   {/* ✅ Display the first image from the 'images' array */}
                   <Image 
                     src={product.images?.[0] || '/placeholder-product.jpg'} 
-                    alt={product.name} 
+                    alt={product.title} 
                     width={50} 
                     height={60} 
                     className="rounded-md object-cover bg-secondary-bg"
                   />
                 </td>
-                <td className="p-4 font-medium text-heading-color">{product.name}</td>
+                <td className="p-4 font-medium text-heading-color">{product.title}</td>
                 <td className="p-4">${product.price.toFixed(2)}</td>
                 <td className="p-4">{product.quantity}</td>
                 <td className="p-4 capitalize">{product.availability.replace('_', ' ')}</td>
                 <td className="p-4 space-x-4 whitespace-nowrap">
                   <button onClick={() => handleOpenModal(product)} className="text-accent hover:underline font-semibold">Edit</button>
-                  <button onClick={() => handleDelete(product._id, product.name)} className="text-red-500 hover:underline font-semibold">Delete</button>
+                  <button onClick={() => handleDelete(product._id, product.title)} className="text-red-500 hover:underline font-semibold">Delete</button>
                 </td>
               </tr>
             ))}

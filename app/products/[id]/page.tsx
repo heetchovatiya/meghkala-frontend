@@ -32,7 +32,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           <div className="relative aspect-[4/5] w-full bg-secondary-bg rounded-lg overflow-hidden shadow-md">
             <Image
               src={displayImage}
-              alt={product.name}
+              alt={product.title}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
@@ -44,7 +44,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {/* ✅ Removed sticky positioning on mobile to prevent layout issues */}
           <div className="md:sticky md:top-28">
             {/* ✅ Adjusted text sizes for better mobile hierarchy */}
-            <h1 className="text-3xl lg:text-5xl font-serif font-bold text-heading-color">{product.name}</h1>
+            <h1 className="text-3xl lg:text-5xl font-serif font-bold text-heading-color">{product.title}</h1>
             <p className="text-2xl lg:text-3xl font-sans text-text-color mt-3">₹{product.price.toFixed(2)}</p>
             
             <div className="mt-6 border-t border-secondary-bg pt-6">

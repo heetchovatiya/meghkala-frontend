@@ -17,7 +17,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   
   const [shippingAddress, setShippingAddress] = useState({
-    street: '', city: '', postalCode: '', country: ''
+    street: '', city: '', postalCode: '', country: '', contactNumber: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,7 +36,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!token) return toast.error("Authentication error. Please log in again.");
-    if (!shippingAddress.street || !shippingAddress.city) {
+    if (!shippingAddress.street || !shippingAddress.city || !shippingAddress.postalCode || !shippingAddress.country || !shippingAddress.contactNumber) {
         return toast.error("Please fill in your shipping address.");
     }
     
@@ -44,15 +44,16 @@ export default function CheckoutPage() {
     const toastId = toast.loading("Creating your order...");
 
     // ✅ MODIFIED: Pass 'couponCode' directly in the payload
-    const orderData = {
+     const orderData = {
       orderItems: cartItems.map(item => ({
         productId: item._id,
-        quantity: item.quantity,
+        // Use `item.cartQuantity` (the quantity in the cart)
+        // instead of `item.quantity` (the total stock of the product).
+        quantity: item.cartQuantity, 
       })),
-      shippingAddress, // Add shipping address to the order
-      couponCode: couponCode, // Pass the coupon code string from the context
+      shippingAddress,
+      couponCode: couponCode,
     };
-
     try {
       const newOrder = await api.createOrder(token, orderData);
       toast.success("Order created! Proceed to payment.", { id: toastId });
