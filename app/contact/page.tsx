@@ -19,7 +19,7 @@ export default function ContactPage() {
     const data = new FormData(form);
 
     try {
-      const response = await fetch('https://formspree.io/f/mzzvybeb', { // <-- PASTE YOUR FORMSPREE URL HERE
+      const response = await fetch('https://formspree.io/f/xeozwjbw', { // <-- PASTE YOUR FORMSPREE URL HERE
         method: 'POST',
         body: data,
         headers: {

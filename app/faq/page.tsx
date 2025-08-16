@@ -30,7 +30,7 @@ export default function FAQPage() {
             <p>All our crocheted items are made from high-quality, natural cotton and wool yarns. Our ceramic pieces are crafted from locally sourced, durable stoneware clay.</p>
 
             <h2>Are the items truly handmade?</h2>
-            <p><strong>Absolutely.</strong> Every single item at Meghkala is handcrafted by our founder, Heet Mehta. This means each piece is unique and carries the subtle marks of its creation process, which we believe is part of its charm.</p>
+            <p><strong>Absolutely.</strong> Every single item at Meghkala is handcrafted by our founder, Megha Chovatiya. This means each piece is unique and carries the subtle marks of its creation process, which we believe is part of its charm.</p>
             
             <h2>How do I care for my crocheted items?</h2>
             <p>We recommend gentle spot cleaning with a mild detergent and cold water. For a deeper clean, hand wash in cold water and lay flat to dry. Do not machine wash or tumble dry.</p>
