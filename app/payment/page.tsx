@@ -82,12 +82,12 @@ export default function PaymentPage() {
 
       <div className="my-8 inline-block bg-white p-4 rounded-lg shadow-md">
         {/* ✅ UPDATE THIS: Replace with your actual QR code file from the /public folder */}
-        <Image src="/qr-code.jpg" alt="UPI QR Code" width={250} height={250} priority />
+        <Image src="/qr2-code.jpg" alt="UPI QR Code" width={250} height={250} priority />
       </div>
 
       <p className="text-lg text-heading-color font-semibold">
         {/* ✅ UPDATE THIS: Replace with your actual UPI ID */}
-        UPI ID: <span className="font-mono text-accent">9999999999@axis.com</span>
+        UPI ID: <span className="font-mono text-accent">meghachovatiya9@okicici</span>
       </p>
       
       <div className="mt-12 max-w-lg mx-auto p-6 bg-secondary-bg/60 rounded-lg shadow-inner">
