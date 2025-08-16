@@ -6,17 +6,25 @@ import { ProductFilters } from './ProductFilters';
 import { SortDropdown } from './SortDropdown';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
+// ✅ Define the 'Category' type so this component understands the data shape
+interface Category {
+  _id: string;
+  name: string;
+}
+
+// ✅ DEFINE THE PROPS INTERFACE to accept the 'categories' array
 interface MobileFilterSheetProps {
   isOpen: boolean;
   onClose: () => void;
+  categories: Category[]; // It must now accept the categories
 }
 
-export function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheetProps) {
+// ✅ Use the new interface to type the component's props
+export function MobileFilterSheet({ isOpen, onClose, categories }: MobileFilterSheetProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const handleClearFilters = () => {
     // Navigate to the base products page, clearing all filters
@@ -56,18 +64,20 @@ export function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheetProps) {
 
               {/* Filter & Sort Content */}
               <div className="p-6 pt-2 space-y-8 overflow-y-auto max-h-[60vh]">
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                     <h3 className="text-lg font-semibold text-heading-color">Search</h3>
                     <SearchBar />
-                </div>
+                </div> */}
                 <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-heading-color">Category</h3>
-                    <ProductFilters />
+                    <h3 className="text-lg font-semibold text-heading-color mb-4">Category</h3>
+                    {/* ✅ Pass the 'categories' prop down to the final filter component */}
+                    {/* Also pass the 'onClose' function so the sheet can close automatically */}
+                    <ProductFilters categories={categories} onFilterChange={onClose} />
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                     <h3 className="text-lg font-semibold text-heading-color">Sort by</h3>
-                    <SortDropdown />
-                </div>
+                    <SortDropdown onSortChange={onClose} />
+                </div> */}
               </div>
               
               {/* Action Buttons Footer */}

@@ -1,82 +1,82 @@
 // components/products/ProductFilters.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
-import * as api from '@/lib/api';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { Menu, Transition } from '@headlessui/react'; // Import from Headless UI
-import { ChevronDown } from 'lucide-react';
-import { Fragment } from 'react';
+import { motion } from 'framer-motion';
 
 interface Category {
   _id: string;
   name: string;
 }
-export function ProductFilters() {
-  const [categories, setCategories] = useState<Category[]>([]);
+
+interface ProductFiltersProps {
+  categories: Category[];
+  onFilterChange?: () => void;
+}
+
+export function ProductFilters({ categories, onFilterChange }: ProductFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get('category');
 
-  useEffect(() => {
-    api.getCategories().then(setCategories);
-  }, []);
-
- const handleFilterChange = (categoryId: string) => {
-
+  const handleFilterChange = (categoryId: string) => {
     const params = new URLSearchParams(searchParams.toString());
-
     if (categoryId) {
       params.set('category', categoryId);
     } else {
-
       params.delete('category');
     }
+    // Use { scroll: false } for a smoother experience on desktop
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    
+    if (onFilterChange) {
+      onFilterChange();
+    }
+  };
 
-    router.push(`${pathname}?${params.toString()}`);
-  };  const selectedCategoryName = categories.find(c => c._id === currentCategory)?.name || "All Categories";
+  // Create a combined list with "All" at the beginning
+  const allFilterOptions = [{ _id: '', name: 'All Products' }, ...categories];
 
   return (
     <div>
-    <Menu as="div" className="relative inline-block text-left w-full">
-        <div>
-          <Menu.Button className="inline-flex w-full justify-between items-center rounded-md bg-primary-bg px-4 py-3 text-md font-medium text-heading-color shadow-sm border border-secondary-bg hover:bg-secondary-bg/60">
-            {selectedCategoryName}
-            <ChevronDown className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
-          </Menu.Button>
-        </div>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Menu.Items className="absolute left-0 mt-2 w-full origin-top-right rounded-md bg-primary-bg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-            <div className="py-1">
-              <Menu.Item>
-                {({ active }) => (
-                  <button onClick={() => handleFilterChange('')} className={`${ active ? 'bg-secondary-bg' : ''} group flex w-full items-center px-4 py-2 text-md`}>
-                    All Categories
-                  </button>
+      {/* <h3 className="text-xl font-serif text-heading-color mb-4">
+        Categories
+      </h3> */}
+      
+      {/* A clean, vertical list of filter options */}
+      <ul className="space-y-1">
+        {allFilterOptions.map(category => {
+          const isActive = (!currentCategory && category._id === '') || currentCategory === category._id;
+
+          return (
+            <li key={category._id || 'all'}>
+              <button
+                onClick={() => handleFilterChange(category._id)}
+                className={`relative w-full text-left px-4 py-2 rounded-md
+                            transition-colors duration-200 ease-in-out
+                            ${isActive 
+                              ? 'text-heading-color' 
+                              : 'text-text-color hover:bg-secondary-bg/60'
+                            }`}
+              >
+                {/* The animated dot/pill background */}
+                {isActive && (
+                  <motion.div 
+                    className="absolute left-0 top-0 bottom-0 w-1 bg-accent rounded-r-full" 
+                    layoutId="active-category-indicator" // Shared layoutId for the animation
+                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                  />
                 )}
-              </Menu.Item>
-              {categories.map(category => (
-                <Menu.Item key={category._id}>
-                  {({ active }) => (
-                    <button onClick={() => handleFilterChange(category._id)} className={`${ active ? 'bg-secondary-bg' : ''} group flex w-full items-center px-4 py-2 text-md`}>
-                      {category.name}
-                    </button>
-                  )}
-                </Menu.Item>
-              ))}
-            </div>
-          </Menu.Items>
-        </Transition>
-      </Menu>
+                {/* The text is bold when active */}
+                <span className={`relative z-10 ${isActive ? 'font-bold' : 'font-normal'}`}>
+                  {category.name}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

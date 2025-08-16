@@ -1,5 +1,5 @@
 // components/products/CartItemRow.tsx
-"use client"; // Note: "use-client" was a typo, should be "use client"
+"use client";
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,61 +13,52 @@ interface CartItemRowProps {
 
 export function CartItemRow({ item }: CartItemRowProps) {
   const { updateQuantity, removeFromCart } = useCart();
-
   if (!item) { return null; }
-
   const displayImage = item.images?.[0] || '/placeholder-product.jpg';
 
   return (
-    <div className="flex items-center gap-4 py-4 border-b border-secondary-bg last:border-b-0">
-      {/* Product Image & Name */}
-      <div className="flex items-center gap-4 flex-1">
+    <div className="grid grid-cols-4 sm:grid-cols-5 gap-4 items-center py-6 border-b border-secondary-bg last:border-b-0">
+      
+      {/* Product Image & Name (takes up 2 columns) */}
+      <div className="col-span-2 flex items-center gap-4">
         <Link href={`/products/${item._id}`}>
-          <div className="relative w-16 h-20 bg-secondary-bg rounded-md overflow-hidden">
+          <div className="relative w-20 h-24 bg-secondary-bg rounded-md overflow-hidden shrink-0">
             <Image src={displayImage} alt={item.title} fill className="object-cover" />
           </div>
         </Link>
         <div>
           <Link href={`/products/${item._id}`} className="font-semibold text-heading-color hover:text-accent transition-colors">
-            {item.title} 
+            {item.title}
           </Link>
-          <p className="text-sm text-text-color">₹{item.price.toFixed(2)}</p>
+          <p className="text-sm text-text-color mt-1">₹{item.price.toFixed(2)}</p>
+          {/* Mobile-only remove button */}
+          <button onClick={() => removeFromCart(item._id)} className="sm:hidden mt-2 text-xs text-red-500 hover:underline">
+            Remove
+          </button>
         </div>
       </div>
 
-      {/* Quantity Selector */}
-      <div className="flex items-center border border-secondary-bg rounded-md">
-        <button 
-          // ✅ Use `cartQuantity` for the calculation
-          onClick={() => updateQuantity(item._id, item.cartQuantity - 1)}
-          className="px-3 py-2 text-text-color hover:bg-secondary-bg/60 transition-colors disabled:opacity-50"
-          aria-label="Decrease quantity"
-          // ✅ Use `cartQuantity` for the disabled check
-          disabled={item.cartQuantity <= 1}
-        >
-          <Minus size={16} />
-        </button>
-        {/* ✅ Display `cartQuantity` */}
-        <span className="px-3 text-center w-12 font-medium text-heading-color">{item.cartQuantity}</span>
-        <button 
-          // ✅ Use `cartQuantity` for the calculation
-          onClick={() => updateQuantity(item._id, item.cartQuantity + 1)}
-          className="px-3 py-2 text-text-color hover:bg-secondary-bg/60 transition-colors"
-          aria-label="Increase quantity"
-        >
-          <Plus size={16} />
-        </button>
+      {/* Quantity Selector (1 column) */}
+      <div className="col-span-1 justify-self-center">
+        <div className="flex items-center border border-secondary-bg rounded-md">
+          <button onClick={() => updateQuantity(item._id, item.cartQuantity - 1)} className="px-3 py-2..." disabled={item.cartQuantity <= 1}>
+            <Minus size={16} />
+          </button>
+          <span className="px-3 ...">{item.cartQuantity}</span>
+          <button onClick={() => updateQuantity(item._id, item.cartQuantity + 1)} className="px-3 py-2...">
+            <Plus size={16} />
+          </button>
+        </div>
       </div>
-
-      {/* Total Price for this item */}
-      <div className="w-24 text-right">
-        {/* ✅ Use `cartQuantity` for the total calculation */}
+      
+      {/* Total Price (1 column) */}
+      <div className="col-span-1 text-right">
         <p className="font-semibold text-heading-color">₹{(item.price * item.cartQuantity).toFixed(2)}</p>
       </div>
       
-      {/* Remove Button */}
-      <div className="w-10 text-right">
-        <button onClick={() => removeFromCart(item._id)} className="text-text-color hover:text-red-500 transition-colors" aria-label={`Remove ${item.title} from cart`}>
+      {/* Desktop-only Remove Button (1 column) */}
+      <div className="hidden sm:block col-span-1 text-right">
+        <button onClick={() => removeFromCart(item._id)} className="text-text-color hover:text-red-500 transition-colors">
           <X size={20} />
         </button>
       </div>
