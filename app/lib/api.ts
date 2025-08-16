@@ -1,12 +1,13 @@
 // lib/api.ts
 
 // --- Core API Utility ---
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5001';
 
-const API_BASE_URL = 'http://localhost:5001/api';
 
 // A universal fetcher function to handle requests, responses, and errors.
 async function fetcher(url: string, options: RequestInit = {}) {
-  const response = await fetch(`${API_BASE_URL}${url}`, options);
+  // The path now correctly includes '/api'
+  const response = await fetch(`${API_BASE_URL}/api${url}`, options);
   
   if (!response.ok) {
     const errorData = await response.json();
