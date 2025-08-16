@@ -6,22 +6,28 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5
 
 // A universal fetcher function to handle requests, responses, and errors.
 async function fetcher(url: string, options: RequestInit = {}) {
-  // The path now correctly includes '/api'
-  const response = await fetch(`${API_BASE_URL}/api${url}`, options);
+  // ✅ --- THIS IS THE FIX --- ✅
+  // We add a `cache` option to the fetch call.
+  // 'no-store' tells Next.js: "Never cache the result of this specific API call."
+  // This forces it to go to your backend every single time you visit the page.
+  const response = await fetch(`${API_BASE_URL}/api${url}`, {
+    ...options,
+    next: {
+      revalidate:60   
+    }
+   });
+  // ✅ ------------------------- ✅
   
   if (!response.ok) {
     const errorData = await response.json();
-    // This makes sure our forms and components can display API-sent error messages.
-    throw new Error(errorData.message || 'An unexpected error occurred.');
+    throw new Error(errorData.message || 'Something went wrong');
   }
   
-  // For DELETE requests or other actions that might not return a body
-  if (response.status === 204) {
-    return;
-  }
+  if (response.status === 204) { return; }
   
   return response.json();
 }
+  
 
 // =========================================================================
 // Module 1: Authentication & User Management
