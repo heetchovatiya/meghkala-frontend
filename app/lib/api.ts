@@ -13,7 +13,7 @@ async function fetcher(url: string, options: RequestInit = {}) {
   const response = await fetch(`${API_BASE_URL}/api${url}`, {
     ...options,
     next: {
-      revalidate:60   
+      revalidate:0   
     }
    });
   // ✅ ------------------------- ✅
