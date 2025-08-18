@@ -27,16 +27,25 @@ export default function FAQPage() {
                           prose-headings:font-serif prose-strong:text-heading-color">
             
             <h2>What are your products made of?</h2>
-            <p>All our crocheted items are made from high-quality, natural cotton and wool yarns. Our ceramic pieces are crafted from locally sourced, durable stoneware clay.</p>
+            <p>All our crochet creations are made with premium, skin-friendly cotton and wool yarns to ensure durability and comfort.</p>
+
+            <h2>Do you take custom orders?</h2>
+            <p>Yes! We love making personalized crochet pieces. You can share your design, color, or size preferences, and we’ll create something just for you.</p>
 
             <h2>Are the items truly handmade?</h2>
             <p><strong>Absolutely.</strong> Every single item at Meghkala is handcrafted by our founder, Megha Chovatiya. This means each piece is unique and carries the subtle marks of its creation process, which we believe is part of its charm.</p>
             
-            <h2>How do I care for my crocheted items?</h2>
-            <p>We recommend gentle spot cleaning with a mild detergent and cold water. For a deeper clean, hand wash in cold water and lay flat to dry. Do not machine wash or tumble dry.</p>
+            <h2>How do I take care of crochet products?</h2>
+            <p>Hand wash gently with mild detergent and cold water. Do not wring. Lay flat to dry to maintain the shape and softness.</p>
+
+            <h2>Do you ship all over India?</h2>
+            <p>Yes, we provide delivery across India. Shipping charges may vary depending on your location.</p>
             
+            <h2>Do you accept returns or exchanges?</h2>
+            <p>Since all items are handmade with love, we currently do not accept returns or exchanges.In case of any kind of damage in piece customer have to share opening video of parcel 📦 , cut video or only photos of damaged piece will not acceptable by us</p>
+
             <h2>What is your return policy?</h2>
-            <p>Due to the unique, handmade nature of our products, we do not accept returns or exchanges. However, if your item arrives damaged, please <a href="/contact" className="text-accent hover:underline">contact us</a> within 48 hours of delivery with photos of the damage, and we will be happy to assist you.</p>
+            <p>Due to the unique, handmade nature of our products, we do not accept returns or exchanges. However, if your item arrives damaged, please <a href="/contact" className="text-accent hover:underline">contact us</a> within 48 hours of delivery with opening video of parcel 📦 , cut video or only photos of damaged piece will not acceptable by us , and we will be happy to assist you.</p>
 
             {/* Add more questions and answers here */}
 
