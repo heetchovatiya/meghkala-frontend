@@ -41,9 +41,7 @@ export default function FAQPage() {
             <h2>Do you ship all over India?</h2>
             <p>Yes, we provide delivery across India. Shipping charges may vary depending on your location.</p>
             
-            <h2>Do you accept returns or exchanges?</h2>
-            <p>Since all items are handmade with love, we currently do not accept returns or exchanges.In case of any kind of damage in piece customer have to share opening video of parcel 📦 , cut video or only photos of damaged piece will not acceptable by us</p>
-
+            
             <h2>What is your return policy?</h2>
             <p>Due to the unique, handmade nature of our products, we do not accept returns or exchanges. However, if your item arrives damaged, please <a href="/contact" className="text-accent hover:underline">contact us</a> within 48 hours of delivery with opening video of parcel 📦 , cut video or only photos of damaged piece will not acceptable by us , and we will be happy to assist you.</p>
 
