@@ -110,11 +110,19 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <div className="mt-6">
+              {/* <div className="mt-6">
                 <Link href="/checkout" className="w-full block text-center ...">
                   Proceed to Checkout
                 </Link>
-              </div>
+              </div> */}
+              <div className="mt-6">
+  <Link
+    href="/checkout"
+    className="w-full block text-center bg-accent text-white py-3 px-6 rounded-lg font-bold hover:bg-accent/50 active:bg-accent-darker active:shadow-inner transition-colors duration-200 **cursor-pointer**"
+  >
+    Proceed to Checkout
+  </Link>
+</div>
             </div>
           </div>
         </div>
