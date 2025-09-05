@@ -36,7 +36,7 @@ export function Footer() {
               <li><Link href="/products" className="hover:text-heading-color transition-colors">All Collections</Link></li>
               <li><Link href="/categories" className="hover:text-heading-color transition-colors">Categories</Link></li>
               <li><Link href="/our-story" className="hover:text-heading-color transition-colors">Our Story</Link></li>
-              <li><Link href="/contact" className="hover:text-heading-color transition-colors">Contact Us</Link></li>
+             {/*<li><Link href="/contact" className="hover:text-heading-color transition-colors">Contact Us</Link></li> */} 
             </ul>
           </div>
           
@@ -45,6 +45,7 @@ export function Footer() {
             <h3 className="font-serif text-lg font-semibold text-heading-color mb-4">Information</h3>
             <ul className="space-y-2">
               <li><Link href="/faq" className="hover:text-heading-color transition-colors">FAQ</Link></li>
+              <li><Link href="/contact" className="hover:text-heading-color transition-colors">Contact Us</Link></li>
               {/* <li><Link href="/shipping-returns" className="hover:text-heading-color transition-colors">Shipping & Returns</Link></li> */}
               {/* <li><Link href="/privacy-policy" className="hover:text-heading-color transition-colors">Privacy Policy</Link></li> */}
             </ul>

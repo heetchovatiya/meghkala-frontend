@@ -266,3 +266,4 @@ export const adminUpdateNotificationStatus = (token: string, notificationId: str
   body: JSON.stringify({ status }),
 });
 
+console.log('API_BASE_URL:', API_BASE_URL);

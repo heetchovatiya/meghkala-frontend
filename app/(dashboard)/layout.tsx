@@ -29,23 +29,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="container mx-auto px-6 py-12">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-8"> */}
         {/* Sidebar Navigation */}
         <aside className="md:col-span-1">
-          <div className="p-6 bg-secondary-bg/60 rounded-lg shadow-sm sticky top-28">
-            <div className="mb-4">
+          {/* <div className="p-6 bg-secondary-bg/60 rounded-lg shadow-sm sticky top-28"> */}
+            {/* <div className="mb-4">
               <h2 className="font-bold text-lg text-heading-color">{user?.name}</h2>
               <p className="text-sm text-text-color">{user?.email}</p>
-            </div>
-            <nav className="space-y-2 border-t border-secondary-bg pt-4">
-              <Link href="/my-profile" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
+            </div> */}
+            {/* <nav className="space-y-2 border-t border-secondary-bg pt-4"> */}
+              {/* <Link href="/my-profile" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
                 <User size={20} />
                 <span>My Profile</span>
-              </Link>
-              <Link href="/my-orders" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
+              </Link> */}
+              {/* <Link href="/my-orders" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
                 <Package size={20} />
                 <span>My Orders</span>
-              </Link>
+              </Link> */}
 
               {/* ✅ --- START: Conditional Admin Button --- ✅ */}
               {user?.role === 'admin' && (
@@ -56,19 +56,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               )}
               {/* ✅ --- END: Conditional Admin Button --- ✅ */}
 
-              <button onClick={logout} className="w-full flex items-center gap-3 p-3 rounded-md text-red-500 hover:bg-red-100 transition-colors mt-4 border-t border-secondary-bg pt-4">
+              {/* <button onClick={logout} className="w-full flex items-center gap-3 p-3 rounded-md text-red-500 hover:bg-red-100 transition-colors mt-4 border-t border-secondary-bg pt-4">
                 <LogOut size={20} />
                 <span>Logout</span>
-              </button>
-            </nav>
-          </div>
+              </button> */}
+            {/* </nav> */}
+          {/* </div> */}
         </aside>
 
         {/* Page Content */}
         <main className="md:col-span-3">
           {children}
         </main>
-      </div>
+      {/* </div> */}
     </div>
   );
 }
