@@ -683,7 +683,6 @@ export const adminUpdateNotificationStatus = (
     body: JSON.stringify({ status }),
   });
 
-<<<<<<< HEAD
 // ===== NOTIFICATION FUNCTIONS =====
 
 // Public: Create stock notification request
@@ -724,6 +723,3 @@ export const getAllStockNotifications = (token: string) =>
   fetcher("/notifications/admin/stock-alerts", {
     headers: { Authorization: `Bearer ${token}` },
   });
-=======
-console.log('API_BASE_URL:', API_BASE_URL);
->>>>>>> a3483edccba147da04df8727df923cd6a9f35628

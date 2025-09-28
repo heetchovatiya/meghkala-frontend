@@ -110,7 +110,6 @@ export default function CartPage() {
                 </div>
               </div>
 
-<<<<<<< HEAD
               <div className="mt-6">
                 {isAuthenticated ? (
                   <Link href="/checkout" className="w-full block text-center bg-accent text-white font-semibold rounded-md py-4 text-lg transition-all duration-300 ease-in-out hover:bg-accent-hover">
@@ -125,21 +124,7 @@ export default function CartPage() {
                   </Link>
                 )}
               </div>
-=======
-              {/* <div className="mt-6">
-                <Link href="/checkout" className="w-full block text-center ...">
-                  Proceed to Checkout
-                </Link>
-              </div> */}
-              <div className="mt-6">
-  <Link
-    href="/checkout"
-    className="w-full block text-center bg-accent text-white py-3 px-6 rounded-lg font-bold hover:bg-accent/50 active:bg-accent-darker active:shadow-inner transition-colors duration-200 **cursor-pointer**"
-  >
-    Proceed to Checkout
-  </Link>
-</div>
->>>>>>> a3483edccba147da04df8727df923cd6a9f35628
+
             </div>
           </div>
         </div>
