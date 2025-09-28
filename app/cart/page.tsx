@@ -2,16 +2,18 @@
 "use client";
 
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/hooks/useAuth';
 import { CartItemRow } from '@/components/products/CartItemRow';
 import { Button } from '@/components/common/Button';
 import Link from 'next/link';
-import { ShoppingBag, X } from 'lucide-react';
+import { ShoppingBag, X, LogIn } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 export default function CartPage() {
   // ✅ MODIFIED: Destructure the new properties from our simplified useCart hook.
   const { cartItems, cartTotal, couponCode, applyCouponCode, removeCoupon, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
   
   // Local state for the input field. Initialize with the coupon code from context.
   const [couponInput, setCouponInput] = useState(couponCode || '');
@@ -19,13 +21,11 @@ export default function CartPage() {
   // This is now a simple, synchronous handler.
   const handleApplyCoupon = () => {
     applyCouponCode(couponInput);
-    toast.success(`Coupon "${couponInput.toUpperCase()}" will be applied at checkout.`);
   };
 
   const handleRemoveCoupon = () => {
     removeCoupon();
     setCouponInput('');
-    toast.success("Coupon removed.");
   };
 
   if (cartItems.length === 0) {
@@ -42,7 +42,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-primary-bg min-h-screen py-12">
+    <div className="bg-primary-bg min-h-[calc(100vh-5rem)] py-12">
       <div className="container mx-auto px-6">
         <h1 className="text-4xl font-serif text-heading-color mb-8">Your Shopping Cart</h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -111,10 +111,20 @@ export default function CartPage() {
               </div>
 
               <div className="mt-6">
-                <Link href="/checkout" className="w-full block text-center ...">
-                  Proceed to Checkout
-                </Link>
+                {isAuthenticated ? (
+                  <Link href="/checkout" className="w-full block text-center bg-accent text-white font-semibold rounded-md py-4 text-lg transition-all duration-300 ease-in-out hover:bg-accent-hover">
+                    Proceed to Checkout
+                  </Link>
+                ) : (
+                  <Link href="/login?redirect=/checkout" className="w-full block text-center bg-accent text-white font-semibold rounded-md py-4 text-lg transition-all duration-300 ease-in-out hover:bg-accent-hover">
+                    <div className="flex items-center justify-center gap-2">
+                      <LogIn size={20} />
+                      Login to Continue
+                    </div>
+                  </Link>
+                )}
               </div>
+
             </div>
           </div>
         </div>

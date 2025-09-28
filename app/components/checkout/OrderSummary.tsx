@@ -4,8 +4,8 @@
 import { useCart } from '@/hooks/useCart';
 
 export function OrderSummary() {
-  // ✅ MODIFIED: We no longer get 'grandTotal'. We get 'couponCode' instead.
-  const { cartItems, cartTotal, couponCode } = useCart();
+  // ✅ MODIFIED: Get all necessary cart data including discount
+  const { cartItems, cartTotal, couponCode, discountAmount, finalTotal, shippingCost } = useCart();
 
   return (
     <div className="bg-secondary-bg/60 p-6 rounded-lg shadow-sm">
@@ -40,20 +40,23 @@ export function OrderSummary() {
         
         <div className="flex justify-between">
           <span className="text-text-color">Shipping</span>
-          <span className="text-sm">Calculated later</span>
+          <span className="text-sm">
+            {cartTotal >= 700 ? 'Free' : `₹${shippingCost.toFixed(2)}`}
+          </span>
         </div>
-        <div className="flex justify-between">
+        {discountAmount > 0 && (
+          <div className="flex justify-between text-green-600">
             <span className="text-text-color">Discount</span>
-            <span className="text-sm">Calculated at checkout</span>
-        </div>
+            <span className="text-sm font-semibold">-₹{discountAmount.toFixed(2)}</span>
+          </div>
+        )}
       </div>
       
-      {/* ✅ MODIFIED: The final total is now the subtotal.
-          The text clarifies that the final price will be confirmed. */}
+      {/* Final total with all calculations */}
       <div className="border-t border-secondary-bg pt-4">
         <div className="flex justify-between font-bold text-lg">
-          <span className="text-heading-color">Estimated Total</span>
-          <span className="text-heading-color">₹{cartTotal.toFixed(2)}</span>
+          <span className="text-heading-color">Final Total</span>
+          <span className="text-heading-color">₹{finalTotal.toFixed(2)}</span>
         </div>
       </div>
     </div>

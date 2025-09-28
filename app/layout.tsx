@@ -8,6 +8,7 @@ import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/contexts/CartContext'; // <-- 1. IMPORT
 import { AuthProvider } from '@/contexts/AuthContext'; // <-- IMPORT
 import { ToastProvider } from '@/components/ui/ToastProvider'; // <-- IMPORT
+import { StartupAnimationWrapper } from '@/components/common/StartupAnimationWrapper';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const inter = Inter({
@@ -27,15 +28,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="...">
+      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <ToastProvider /> {/* Add the Toaster here */}
         <AuthProvider>
           <CartProvider> {/* <-- 2. WRAP WITH CARTPROVIDER */}
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow pt-20">{children}</main>
-              <Footer />
-            </div>
+            <StartupAnimationWrapper>
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow pt-20">{children}</main>
+                <Footer />
+              </div>
+            </StartupAnimationWrapper>
           </CartProvider>
         </AuthProvider>
       </body>

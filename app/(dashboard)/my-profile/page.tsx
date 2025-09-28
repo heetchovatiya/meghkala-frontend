@@ -4,11 +4,16 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import * as api from '@/lib/api';
+import Link from 'next/link';
+import { User, Package, LogOut, ShieldCheck } from 'lucide-react';
+
 
 export default function MyProfilePage() {
-  const { user, token } = useAuth(); // Get user from context as a fallback
+  const { user, token,logout } = useAuth(); // Get user from context as a fallback
   const [profile, setProfile] = useState(user);
   const [loading, setLoading] = useState(true);
+
+ 
 
   // We re-fetch the data here to get the most up-to-date information (like addresses)
   useEffect(() => {
@@ -42,10 +47,19 @@ export default function MyProfilePage() {
           <label className="text-sm text-text-color">Email</label>
           <p className="text-lg text-heading-color font-semibold">{profile.email}</p>
         </div>
-        <div>
-          <label className="text-sm text-text-color">Role</label>
-          <p className="text-lg text-heading-color font-semibold capitalize">{profile.role}</p>
-        </div>
+        {profile.contactNumber && (
+          <div>
+            <label className="text-sm text-text-color">Contact Number</label>
+            <p className="text-lg text-heading-color font-semibold">{profile.contactNumber}</p>
+          </div>
+        )}
+        {profile.role === 'admin' && (
+          <div>
+            <label className="text-sm text-text-color">Role</label>
+            <p className="text-lg text-heading-color font-semibold capitalize">{profile.role}</p>
+          </div>
+        )}
+
         {/* We will add an "Edit Profile" feature later */}
       </div>
     </div>

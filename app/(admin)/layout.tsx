@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, ShoppingCart, Tag, Package, LogOut } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Tag, Package, LogOut, Percent, Gift, Bell } from 'lucide-react';
 import { Logo } from '@/components/common/Logo';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -52,16 +52,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Package size={20} />
             <span>Products</span>
           </Link>
-          <Link href="/admin/categories" className="flex items-center gap-3 p-3 ...">
-          <Tag size={20} />
-          <span>Categories</span>
-        </Link>
+          <Link href="/admin/categories" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
+            <Tag size={20} />
+            <span>Categories</span>
+          </Link>
         {/* ✅ NEW: Link to the Coupons Page */}
           <Link href="/admin/coupons" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
-            <Tag size={20} /> {/* Can use the same icon or a different one */}
+            <Gift size={20} />
             <span>Coupons</span>
           </Link>
-          {/* Add links for Coupons, Categories etc. later */}
+          {/* ✅ NEW: Link to the Discounts Page */}
+          <Link href="/admin/discounts" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
+            <Percent size={20} />
+            <span>Discounts</span>
+          </Link>
+          {/* ✅ NEW: Link to the Notifications Page */}
+          <Link href="/admin/notifications" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
+            <Bell size={20} />
+            <span>Notifications</span>
+          </Link>
         </nav>
         <div className="p-4 border-t border-secondary-bg">
           <button onClick={logout} className="w-full flex items-center gap-3 p-3 rounded-md text-red-500 hover:bg-red-100 transition-colors">

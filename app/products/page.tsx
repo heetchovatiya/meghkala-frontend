@@ -23,12 +23,18 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     // Fetch data concurrently for performance.
     const [fetchedProducts, fetchedCategories] = await Promise.all([
       getProducts({ category, keyword, sort }),
-      getCategories()
+      getCategories(true) // Only get parent categories
     ]);
     
-    // ✅ DEFENSIVE ASSIGNMENT: Only assign the data if the API returned a valid array.
-    // This prevents crashes if the API returns an error object instead of an array.
-    products = Array.isArray(fetchedProducts) ? fetchedProducts : [];
+    // ✅ DEFENSIVE ASSIGNMENT: Handle both array and object responses
+    if (Array.isArray(fetchedProducts)) {
+      products = fetchedProducts;
+    } else if (fetchedProducts && Array.isArray(fetchedProducts.products)) {
+      products = fetchedProducts.products;
+    } else {
+      products = [];
+    }
+    
     allCategories = Array.isArray(fetchedCategories) ? fetchedCategories : [];
     
     // ✅ DEFENSIVE LOGIC: Only try to find the category name if we successfully fetched categories.
@@ -52,36 +58,41 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-12">
-      <div className="text-center mb-12 sm:mb-16">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-heading-color">The Collection</h1>
-        <p className="mt-4 text-lg text-text-color max-w-2xl mx-auto">Browse our curated selection of unique, handcrafted art pieces.</p>
-      </div>
+    <div className="min-h-[calc(100vh-5rem)] bg-white">
+      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        {/* Header Section */}
+        <div className="text-center mb-12 sm:mb-16">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">The Collection</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">Browse our curated selection of unique, handcrafted art pieces that bring beauty and joy to your everyday life.</p>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-12 gap-y-12">
-        {/* DESKTOP SIDEBAR */}
-        <aside className="hidden lg:block lg:col-span-1">
-          <div className="sticky top-28 space-y-10">
-            <SearchBar />
-            {/* The safely-handled `allCategories` array is passed down. */}
-            <ProductFilters categories={allCategories} />
-          </div>
-        </aside>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
+          {/* DESKTOP SIDEBAR */}
+          <aside className="hidden lg:block lg:col-span-1">
+            <div className="sticky top-8 space-y-6">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <SearchBar />
+              </div>
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <ProductFilters categories={allCategories} />
+              </div>
+            </div>
+          </aside>
 
-        {/* MAIN CONTENT */}
-        {error ? (
-          <main className="lg:col-span-3 text-center bg-red-100 text-red-700 p-6 rounded-lg">
-            <h3 className="font-bold">An Error Occurred</h3>
-            <p>{error}</p>
-          </main>
-        ) : (
-          // The safely-handled data is passed to the interactive client component.
-          <ProductList 
-            products={products}
-            categories={allCategories}
-            pageTitle={pageTitle}
-          />
-        )}
+          {/* MAIN CONTENT */}
+          {error ? (
+            <main className="lg:col-span-3 text-center bg-red-50 text-red-700 p-8 rounded-2xl border border-red-200">
+              <h3 className="font-bold text-lg mb-2">An Error Occurred</h3>
+              <p>{error}</p>
+            </main>
+          ) : (
+            <ProductList 
+              products={products}
+              categories={allCategories}
+              pageTitle={pageTitle}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
