@@ -58,6 +58,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   }
 
   return (
+<<<<<<< HEAD
     <div className="min-h-[calc(100vh-5rem)] bg-white">
       <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header Section */}
@@ -78,6 +79,24 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </div>
             </div>
           </aside>
+=======
+    <div className="container mx-auto px-4 sm:px-6 py-12">
+      <div className="text-center mb-12 sm:mb-16">
+        <h1 className="text-4xl md:text-5xl font-serif font-bold text-heading-color">The Collection</h1>
+        <p className="mt-4 text-lg text-text-color max-w-2xl mx-auto">Browse our curated selection of unique, handcrafted art pieces.</p>
+       {/* <div className="grid justify-center items-center"><SearchBar /></div> */}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-12 gap-y-12">
+        {/* DESKTOP SIDEBAR */}
+        <aside className="hidden lg:block lg:col-span-1">
+          <div className="sticky top-28 space-y-10">
+            
+            {/* The safely-handled `allCategories` array is passed down. */}
+            <ProductFilters categories={allCategories} />
+          </div>
+        </aside>
+>>>>>>> a3483edccba147da04df8727df923cd6a9f35628
 
           {/* MAIN CONTENT */}
           {error ? (

@@ -4,11 +4,16 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import * as api from '@/lib/api';
+import Link from 'next/link';
+import { User, Package, LogOut, ShieldCheck } from 'lucide-react';
+
 
 export default function MyProfilePage() {
-  const { user, token } = useAuth(); // Get user from context as a fallback
+  const { user, token,logout } = useAuth(); // Get user from context as a fallback
   const [profile, setProfile] = useState(user);
   const [loading, setLoading] = useState(true);
+
+ 
 
   // We re-fetch the data here to get the most up-to-date information (like addresses)
   useEffect(() => {
@@ -42,6 +47,7 @@ export default function MyProfilePage() {
           <label className="text-sm text-text-color">Email</label>
           <p className="text-lg text-heading-color font-semibold">{profile.email}</p>
         </div>
+<<<<<<< HEAD
         {profile.contactNumber && (
           <div>
             <label className="text-sm text-text-color">Contact Number</label>
@@ -54,6 +60,20 @@ export default function MyProfilePage() {
             <p className="text-lg text-heading-color font-semibold capitalize">{profile.role}</p>
           </div>
         )}
+=======
+        <Link href="/my-orders" className="flex items-center gap-3 p-3 rounded-md hover:bg-secondary-bg transition-colors">
+                <Package size={20} />
+                <span>My Orders</span>
+              </Link>
+              <button onClick={logout} className="w-full flex items-center gap-3 p-3 rounded-md text-red-500 hover:bg-red-100 transition-colors mt-4 border-t border-secondary-bg pt-4">
+                <LogOut size={20} />
+                <span>Logout</span>
+              </button>      
+        {/* <div>
+           <label className="text-sm text-text-color">Role</label> 
+          <p className="text-lg text-heading-color font-semibold capitalize">{profile.role}</p>
+        </div> */}
+>>>>>>> a3483edccba147da04df8727df923cd6a9f35628
         {/* We will add an "Edit Profile" feature later */}
       </div>
     </div>
