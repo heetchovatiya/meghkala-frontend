@@ -4,6 +4,7 @@ import Link from 'next/link';
 export interface Category {
   _id: string;
   name: string;
+  image?: string;
 }
 
 interface CategoryCardProps {
@@ -18,29 +19,34 @@ export function CategoryCard({ category }: CategoryCardProps) {
                  transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl"
     >
       {/* 
-        The gradient background. 
-        It starts from a slightly darker version of your secondary background (`#E9E4DE`)
-        and fades into your primary background (`#F8F7F4`).
+        Background image or fallback gradient background
       */}
-      <div 
-        className="absolute inset-0 bg-gradient-to-br from-secondary-bg to-primary-bg"
-      ></div>
+      {category.image ? (
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${category.image})` }}
+        ></div>
+      ) : (
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-secondary-bg to-primary-bg"
+        ></div>
+      )}
 
       {/* 
-        A subtle overlay that becomes slightly more opaque on hover,
-        making the text pop.
+        Dark overlay to ensure text readability over images
       */}
       <div 
-        className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 
-                   transition-opacity duration-300"
+        className="absolute inset-0 bg-black/30 group-hover:bg-black/40 
+                   transition-all duration-300"
       ></div>
       
       {/* 
         Flexbox container to perfectly center the text both horizontally and vertically.
       */}
       <div className="relative h-full w-full flex items-center justify-center p-4">
-        <h3 className="text-3xl font-serif text-heading-color text-center 
-                       transition-transform duration-300 group-hover:scale-105">
+        <h3 className="text-3xl font-serif text-white text-center font-bold
+                       transition-transform duration-300 group-hover:scale-105
+                       drop-shadow-lg">
           {category.name}
         </h3>
       </div>

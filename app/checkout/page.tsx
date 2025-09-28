@@ -23,19 +23,15 @@ export default function CheckoutPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Protection logic: This is well-written and correct.
+  // Protection logic: Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading) {
       if (!isAuthenticated) {
         toast.error("Please log in to proceed to checkout.");
         router.push('/login?redirect=/checkout');
-      } else if (cartItems.length === 0) {
-        // This check is important to prevent users from accessing an empty checkout
-        toast.error("Your cart is empty.", { id: 'empty-cart-toast' });
-        router.push('/products');
       }
     }
-  }, [isAuthenticated, authLoading, router, cartItems.length]);
+  }, [isAuthenticated, authLoading, router]);
 
   const handlePlaceOrder = async () => {
     if (!token) {
@@ -47,8 +43,22 @@ export default function CheckoutPage() {
         return toast.error("Please fill in all shipping address and contact fields.");
     }
     
+    if (!user?.name) {
+        return toast.error("User name is required for shipping address.");
+    }
+    
     setIsSubmitting(true);
     const toastId = toast.loading("Creating your order...");
+
+    // Transform shipping address to match backend expectations
+    const transformedShippingAddress = {
+      name: user?.name || 'Customer', // Use user's name or default
+      line1: shippingAddress.street,
+      city: shippingAddress.city,
+      postalCode: shippingAddress.postalCode,
+      country: shippingAddress.country,
+      contactNumber: shippingAddress.contactNumber,
+    };
 
     // This payload construction is correct, assuming CartContext uses `cartQuantity`
     const orderData = {
@@ -56,11 +66,25 @@ export default function CheckoutPage() {
         productId: item._id,
         quantity: item.cartQuantity,
       })),
-      shippingAddress,
+      shippingAddress: transformedShippingAddress,
       couponCode: couponCode,
     };
 
     try {
+      // Try to save the address for future use (optional - don't fail order if this fails)
+      try {
+        await api.addUserAddress(token, {
+          line1: shippingAddress.street,
+          city: shippingAddress.city,
+          postalCode: shippingAddress.postalCode,
+          country: shippingAddress.country,
+          contactNumber: shippingAddress.contactNumber,
+        });
+      } catch (addressError) {
+        // Address saving failed, but continue with order
+        console.log('Address saving failed:', addressError);
+      }
+
       const newOrder = await api.createOrder(token, orderData);
       toast.success("Order created! Proceed to payment.", { id: toastId });
       
@@ -72,8 +96,8 @@ export default function CheckoutPage() {
     }
   };
 
-  // This loading state is also correct.
-  if (authLoading || cartItems.length === 0) {
+  // Show loading state while authentication is being checked
+  if (authLoading) {
     return <div className="text-center py-20">Loading Checkout...</div>;
   }
 

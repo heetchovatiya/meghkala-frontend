@@ -4,166 +4,336 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import * as api from '@/lib/api';
-import { Input } from '@/components/common/Input';
 import toast from 'react-hot-toast';
-import DatePicker from 'react-datepicker'; // Import DatePicker
+import { Input } from '@/components/common/Input';
+import { Modal } from '@/components/ui/Modal';
+import { Plus, Edit, Trash2, Copy, CheckCircle } from 'lucide-react';
 
-
-// Define the shape of a Coupon for TypeScript
 interface Coupon {
   _id: string;
   code: string;
   discountType: 'Percentage' | 'Fixed';
   value: number;
+  expiryDate: string;
+  usedBy: string[];
+  createdAt: string;
 }
 
 export default function AdminCouponsPage() {
   const { token } = useAuth();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // State for the new coupon form
-  const [newCoupon, setNewCoupon] = useState({
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState({
     code: '',
-    discountType: 'Fixed', // Assuming backend wants lowercase
+    discountType: 'Percentage' as 'Percentage' | 'Fixed',
     value: '',
-    expiryDate: new Date(new Date().setDate(new Date().getDate() + 30)), // Default to 30 days from now
+    expiryDate: '',
   });
-  
+
   const fetchCoupons = () => {
-    if (!token) return;
-    api.adminGetAllCoupons(token)
-      .then(data => setCoupons(data))
-      .catch(() => toast.error("Failed to load coupons."))
-      .finally(() => setIsLoading(false));
+    if (token) {
+      setLoading(true);
+      api.adminGetAllCoupons(token)
+        .then(data => setCoupons(data))
+        .catch(() => toast.error("Failed to fetch coupons."))
+        .finally(() => setLoading(false));
+    }
   };
 
-  // Fetch coupons on initial load
   useEffect(fetchCoupons, [token]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    // Convert coupon code to uppercase for consistency
-    const processedValue = name === 'code' ? value.toUpperCase() : value;
-    setNewCoupon(prev => ({ ...prev, [name]: processedValue }));
+  const handleOpenModal = (coupon: Coupon | null = null) => {
+    setEditingCoupon(coupon);
+    if (coupon) {
+      setFormData({
+        code: coupon.code,
+        discountType: coupon.discountType,
+        value: String(coupon.value),
+        expiryDate: new Date(coupon.expiryDate).toISOString().split('T')[0],
+      });
+    } else {
+      setFormData({
+        code: '',
+        discountType: 'Percentage',
+        value: '',
+        expiryDate: '',
+      });
+    }
+    setIsModalOpen(true);
   };
 
-  const handleAddCoupon = async (e: React.FormEvent) => {
+  const handleCloseModal = () => {
+    setEditingCoupon(null);
+    setIsModalOpen(false);
+    setFormData({
+      code: '',
+      discountType: 'Percentage',
+      value: '',
+      expiryDate: '',
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
 
-    // ✅ MODIFIED: Create a payload with the correct field names and types
-    const payload = {
-      code: newCoupon.code,
-      discountType: newCoupon.discountType,
-      value: parseFloat(newCoupon.value), // The field is 'value'
-      expiryDate: newCoupon.expiryDate.toISOString(), // Send as ISO string
-    };
-
-    const toastId = toast.loading("Creating coupon...");
+    setIsSubmitting(true);
     try {
-      await api.adminCreateCoupon(token, payload);
-      toast.success(`Coupon "${newCoupon.code}" created!`, { id: toastId });
-      // Reset form
-      setNewCoupon({
-        code: '',
-        discountType: 'Fixed',
-        value: '',
-        expiryDate: new Date(new Date().setDate(new Date().getDate() + 30)),
-      });
+      const payload = {
+        code: formData.code.toUpperCase().trim(),
+        discountType: formData.discountType,
+        value: parseFloat(formData.value),
+        expiryDate: new Date(formData.expiryDate),
+      };
+
+      if (editingCoupon) {
+        await api.adminUpdateCoupon(token, editingCoupon._id, payload);
+        toast.success(`Coupon "${payload.code}" updated successfully!`);
+      } else {
+        await api.adminCreateCoupon(token, payload);
+        toast.success(`Coupon "${payload.code}" created successfully!`);
+      }
+      
       fetchCoupons();
+      handleCloseModal();
     } catch (error: any) {
-      toast.error(`Error: ${error.message}`, { id: toastId });
+      toast.error(`Error: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  
-  const handleDeleteCoupon = async (couponId: string, couponCode: string) => {
-    if (!token || !window.confirm(`Are you sure you want to delete the coupon "${couponCode}"?`)) return;
+
+  const handleDelete = async (couponId: string, couponCode: string) => {
+    if (!token || !window.confirm(`Are you sure you want to delete coupon "${couponCode}"?`)) return;
     
-    const toastId = toast.loading(`Deleting ${couponCode}...`);
     try {
-      // ✅ This calls the correct function in your API library
       await api.adminDeleteCoupon(token, couponId);
-      toast.success(`Coupon "${couponCode}" deleted.`, { id: toastId });
-      fetchCoupons(); // Refresh the list on success
+      toast.success(`Coupon "${couponCode}" deleted.`);
+      fetchCoupons();
     } catch (error: any) {
-      // ✅ This will now catch the "Coupon not found" error from the backend
-      toast.error(`Error: ${error.message}`, { id: toastId });
+      toast.error(`Error: ${error.message}`);
     }
-};
+  };
 
+  const copyToClipboard = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedCode(code);
+      toast.success('Coupon code copied!');
+      setTimeout(() => setCopiedCode(null), 2000);
+    } catch (error) {
+      toast.error('Failed to copy code');
+    }
+  };
 
-  if (isLoading) return <div>Loading coupons...</div>;
+  const isExpired = (expiryDate: string) => {
+    return new Date(expiryDate) < new Date();
+  };
+
+  const getDaysUntilExpiry = (expiryDate: string) => {
+    const now = new Date();
+    const expiry = new Date(expiryDate);
+    const diffTime = expiry.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1 className="text-3xl font-serif text-heading-color mb-8">Manage Coupons</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-         {/* Add Coupon Form */}
-        <div className="md:col-span-1">
-          <form onSubmit={handleAddCoupon} className="bg-primary-bg p-6 rounded-lg shadow-md space-y-4">
-            <h2 className="text-xl ...">Add New Coupon</h2>
-            <Input id="code" name="code" label="Coupon Code" value={newCoupon.code} onChange={handleInputChange} required />
-            <div>
-              <label htmlFor="discountType">Discount Type</label>
-              <select id="discountType" name="discountType" value={newCoupon.discountType} onChange={handleInputChange} className="w-full ...">
-                {/* ✅ MODIFIED: Values are now lowercase */}
-                <option value="Fixed">Fixed Amount (₹)</option>
-                <option value="Percentage">Percentage (%)</option>
-              </select>
-            </div>
-            {/* ✅ MODIFIED: Input name is now 'value' */}
-            <Input id="value" name="value" label="Value" type="number" step="0.01" value={newCoupon.value} onChange={handleInputChange} required />
-            
-            {/* ✅ NEW: Expiry Date Picker */}
-            <div>
-              <label htmlFor="expiryDate" className="block text-sm font-medium text-text-color mb-1">Expiry Date</label>
-             <DatePicker
-                selected={newCoupon.expiryDate}
-                // Update the handler to accept `Date | null`
-                onChange={(date: Date | null) => {
-                  // If a date is selected, update the state.
-                  // If the date is cleared (null), you could set a default or handle it as an error.
-                  // For simplicity, we'll only update if it's a valid date.
-                  if (date) {
-                    setNewCoupon(prev => ({ ...prev, expiryDate: date }));
-                  }
-                }}
-                dateFormat="MMMM d, yyyy"
-                className="w-full px-4 py-2 bg-primary-bg border border-secondary-bg rounded-md focus:ring-2 focus:ring-accent outline-none"
-                minDate={new Date()}
-              />
-            </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-serif text-heading-color">Manage Coupons</h1>
+        <button
+          onClick={() => handleOpenModal()}
+          className="flex items-center gap-2 bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-hover transition-colors"
+        >
+          <Plus size={16} />
+          Add New Coupon
+        </button>
+      </div>
 
-            <button type="submit" className="w-full mt-4 ...">Add Coupon</button>
-          </form>
-        </div>
-
-        {/* Existing Coupons List */}
-        <div className="md:col-span-2 bg-primary-bg p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold text-heading-color mb-4">Existing Coupons</h2>
-          <div className="space-y-2">
-            {coupons.length > 0 ? coupons.map(c => (
-              <div key={c._id} className="flex justify-between items-center p-3 bg-secondary-bg/50 rounded-md">
-                <div>
-                  <p className="font-semibold text-heading-color font-mono">{c.code}</p>
-                  <p className="text-sm text-text-color">
-                    {/* 1. Use 'c.value' instead of 'c.discountValue' to match the backend model. */}
-                    {/* 2. Add a defensive check to ensure 'c.value' is a number before calling toFixed. */}
-                    {c.discountType === 'Fixed'
-                      ? `₹${typeof c.value === 'number' ? c.value.toFixed(2) : '0.00'}`
-                      : `${typeof c.value === 'number' ? c.value : '0'}%`
-                    } off
-                  </p>
-                </div>
-                <button onClick={() => handleDeleteCoupon(c._id, c.code)} className="text-red-500 hover:underline text-sm font-semibold">
-                  Delete
-                </button>
-              </div>
-            )) : <p className="text-text-color text-center py-4">No coupons created yet.</p>}
-          </div>
+      {/* Coupons Table */}
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry</th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {coupons.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    No coupons found
+                  </td>
+                </tr>
+              ) : (
+                coupons.map(coupon => (
+                  <tr key={coupon._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-sm font-medium text-gray-900">
+                          {coupon.code}
+                        </span>
+                        <button
+                          onClick={() => copyToClipboard(coupon.code)}
+                          className="text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                          {copiedCode === coupon.code ? (
+                            <CheckCircle size={16} className="text-green-500" />
+                          ) : (
+                            <Copy size={16} />
+                          )}
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {coupon.discountType}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {coupon.discountType === 'Percentage' 
+                        ? `${coupon.value}%` 
+                        : `₹${coupon.value}`
+                      }
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {new Date(coupon.expiryDate).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {coupon.usedBy.length} uses
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {isExpired(coupon.expiryDate) ? (
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                          Expired
+                        </span>
+                      ) : getDaysUntilExpiry(coupon.expiryDate) <= 7 ? (
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                          Expires Soon
+                        </span>
+                      ) : (
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                      <button
+                        onClick={() => handleOpenModal(coupon)}
+                        className="text-accent hover:text-accent/80 transition-colors"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(coupon._id, coupon.code)}
+                        className="text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
+
+      {/* Coupon Form Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={editingCoupon ? 'Edit Coupon' : 'Add New Coupon'}
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            id="code"
+            label="Coupon Code"
+            value={formData.code}
+            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+            placeholder="e.g., SAVE20"
+            required
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="discountType" className="block text-sm font-medium text-text-color mb-1">
+                Discount Type
+              </label>
+              <select
+                id="discountType"
+                value={formData.discountType}
+                onChange={(e) => setFormData(prev => ({ ...prev, discountType: e.target.value as 'Percentage' | 'Fixed' }))}
+                className="w-full px-4 py-2 bg-primary-bg border border-secondary-bg rounded-md focus:ring-2 focus:ring-accent outline-none transition"
+                required
+              >
+                <option value="Percentage">Percentage</option>
+                <option value="Fixed">Fixed Amount</option>
+              </select>
+            </div>
+
+            <Input
+              id="value"
+              label={formData.discountType === 'Percentage' ? 'Percentage (%)' : 'Amount (₹)'}
+              type="number"
+              step={formData.discountType === 'Percentage' ? '1' : '0.01'}
+              min="0"
+              max={formData.discountType === 'Percentage' ? '100' : undefined}
+              value={formData.value}
+              onChange={(e) => setFormData(prev => ({ ...prev, value: e.target.value }))}
+              placeholder={formData.discountType === 'Percentage' ? '20' : '100'}
+              required
+            />
+          </div>
+
+          <Input
+            id="expiryDate"
+            label="Expiry Date"
+            type="date"
+            value={formData.expiryDate}
+            onChange={(e) => setFormData(prev => ({ ...prev, expiryDate: e.target.value }))}
+            min={new Date().toISOString().split('T')[0]}
+            required
+          />
+
+          <div className="flex justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              onClick={handleCloseModal}
+              className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent-hover disabled:bg-accent/50 transition-colors"
+            >
+              {isSubmitting ? 'Saving...' : editingCoupon ? 'Update Coupon' : 'Create Coupon'}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

@@ -13,9 +13,12 @@ export default function ShippingReturnsPage() {
         
         <h2>Shipping Information</h2>
         <p>We currently ship to all locations within India. As our pieces are handcrafted, please allow 3-5 business days for your order to be prepared for shipment. Once dispatched, you will receive a tracking number via email.</p>
+        
+        <h3>Shipping Charges</h3>
         <ul>
-          <li>Standard Shipping: 5-7 business days</li>
-          <li>Express Shipping: 2-3 business days</li>
+          <li><strong>Free Shipping:</strong> On orders above ₹700</li>
+          <li><strong>Standard Shipping:</strong> ₹50 for orders below ₹700</li>
+          <li><strong>Delivery Time:</strong> 3-5 business days</li>
         </ul>
 
         <h2>Returns Policy</h2>

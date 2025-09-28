@@ -8,7 +8,7 @@ export default async function CategoriesPage() {
   let error: string | null = null;
 
   try {
-    categories = await getCategories();
+    categories = await getCategories(true); // Only fetch parent categories, not subcategories
   } catch (err: any) {
     error = "Failed to load categories. Please try again later.";
   }

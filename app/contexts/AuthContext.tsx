@@ -105,7 +105,8 @@ import { useRouter } from 'next/navigation';
 interface AuthContextType {
   user: any;
   token: string | null;
-  sendOtp: (email: string) => Promise<void>;
+  checkUserExists: (email: string) => Promise<{ exists: boolean; user: any }>;
+  sendOtp: (email: string, name?: string, contactNumber?: string, isNewUser?: boolean) => Promise<void>;
   loginWithOtp: (email: string, otp: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
@@ -150,8 +151,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initializeAuth();
   }, [logout]);
 
-  const sendOtp = async (email: string) => {
-    await api.sendOtp(email);
+  const checkUserExists = async (email: string) => {
+    return await api.checkUserExists(email);
+  };
+
+  const sendOtp = async (email: string, name?: string, contactNumber?: string, isNewUser?: boolean) => {
+    await api.sendOtp(email, name, contactNumber, isNewUser);
   };
 
   const loginWithOtp = async (email: string, otp: string) => {
@@ -177,6 +182,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const value = {
     user,
     token,
+    checkUserExists,
     sendOtp,
     loginWithOtp,
     logout,

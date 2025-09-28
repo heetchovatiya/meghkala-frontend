@@ -42,10 +42,18 @@ export default function MyProfilePage() {
           <label className="text-sm text-text-color">Email</label>
           <p className="text-lg text-heading-color font-semibold">{profile.email}</p>
         </div>
-        <div>
-          <label className="text-sm text-text-color">Role</label>
-          <p className="text-lg text-heading-color font-semibold capitalize">{profile.role}</p>
-        </div>
+        {profile.contactNumber && (
+          <div>
+            <label className="text-sm text-text-color">Contact Number</label>
+            <p className="text-lg text-heading-color font-semibold">{profile.contactNumber}</p>
+          </div>
+        )}
+        {profile.role === 'admin' && (
+          <div>
+            <label className="text-sm text-text-color">Role</label>
+            <p className="text-lg text-heading-color font-semibold capitalize">{profile.role}</p>
+          </div>
+        )}
         {/* We will add an "Edit Profile" feature later */}
       </div>
     </div>

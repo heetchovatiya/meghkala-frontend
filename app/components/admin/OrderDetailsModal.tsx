@@ -54,6 +54,46 @@ export function OrderDetailsModal({ order, onUpdateStatus }: OrderDetailsModalPr
         </div>
       </div>
 
+      {/* Order Summary */}
+      <div className="p-4 bg-secondary-bg/50 rounded-md">
+        <h3 className="font-semibold text-heading-color mb-2">Order Summary</h3>
+        <div className="space-y-1 text-sm">
+          <div className="flex justify-between">
+            <span>Subtotal:</span>
+            <span>₹{order.subtotal?.toFixed(2) || '0.00'}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Shipping:</span>
+            <span>₹{order.shippingCost?.toFixed(2) || '0.00'}</span>
+          </div>
+          {order.discountAmount > 0 && (
+            <div className="flex justify-between text-green-600">
+              <span>Discount:</span>
+              <span>-₹{order.discountAmount?.toFixed(2) || '0.00'}</span>
+            </div>
+          )}
+          <div className="flex justify-between font-bold border-t pt-1">
+            <span>Final Amount:</span>
+            <span>₹{order.finalAmount?.toFixed(2) || '0.00'}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Shipping Address */}
+      {order.shippingAddress && (
+        <div className="p-4 bg-secondary-bg/50 rounded-md">
+          <h3 className="font-semibold text-heading-color mb-2">Shipping Address</h3>
+          <div className="text-sm space-y-1">
+            <p><span className="font-medium">Name:</span> {order.shippingAddress.name}</p>
+            <p><span className="font-medium">Address:</span> {order.shippingAddress.line1}</p>
+            <p><span className="font-medium">City:</span> {order.shippingAddress.city}</p>
+            <p><span className="font-medium">Postal Code:</span> {order.shippingAddress.postalCode}</p>
+            <p><span className="font-medium">Country:</span> {order.shippingAddress.country}</p>
+            <p><span className="font-medium">Contact:</span> {order.shippingAddress.contactNumber}</p>
+          </div>
+        </div>
+      )}
+
       {/* Payment Details */}
       {order.manualPaymentDetails?.screenshotUrl && (
         <div className="p-4 bg-secondary-bg/50 rounded-md">
