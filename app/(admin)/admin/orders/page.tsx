@@ -87,6 +87,10 @@ export default function AdminOrdersPage() {
     setFilteredOrders(filtered);
   }, [orders, searchTerm, statusFilter, dateFilter]);
 
+  const handleViewOrder = (order: any) => {
+    setSelectedOrder(order);
+  };
+
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     if (!token) return toast.error("Authentication session expired.");
 
@@ -180,17 +184,17 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
-          <div className="relative">
+          <div className="relative sm:col-span-2 lg:col-span-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
               placeholder="Search orders..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm sm:text-base"
             />
           </div>
 
@@ -198,7 +202,7 @@ export default function AdminOrdersPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm sm:text-base"
           >
             <option value="all">All Statuses</option>
             {ORDER_STATUSES.map(status => (
@@ -210,7 +214,7 @@ export default function AdminOrdersPage() {
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-sm sm:text-base"
           >
             <option value="all">All Time</option>
             <option value="today">Today</option>
@@ -219,15 +223,78 @@ export default function AdminOrdersPage() {
           </select>
 
           {/* Results Count */}
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-sm text-gray-600 sm:col-span-2 lg:col-span-1">
             <Filter size={16} className="mr-2" />
-            {filteredOrders.length} of {orders.length} orders
+            <span className="hidden sm:inline">{filteredOrders.length} of {orders.length} orders</span>
+            <span className="sm:hidden">{filteredOrders.length} orders</span>
           </div>
         </div>
       </div>
 
-      {/* Orders Table */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      {/* Mobile Card View */}
+      <div className="block lg:hidden space-y-4">
+        {filteredOrders.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">No orders found</div>
+        ) : (
+          filteredOrders.map(order => (
+            <div key={order._id} className="bg-white rounded-lg shadow-md p-4">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h3 className="font-mono text-sm font-medium text-gray-900">
+                    #{order._id.slice(-6).toUpperCase()}
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                  order.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
+                  order.status === 'SHIPPED' ? 'bg-purple-100 text-purple-800' :
+                  order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
+                  order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {order.status}
+                </span>
+              </div>
+              
+              <div className="space-y-2 mb-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Customer:</span>
+                  <span className="font-medium">{order.user?.name || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Items:</span>
+                  <span className="font-medium">{order.items?.length || 0}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Total:</span>
+                  <span className="font-semibold text-lg">₹{order.total?.toFixed(2) || '0.00'}</span>
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleViewOrder(order)}
+                  className="flex-1 bg-accent text-white py-2 px-3 rounded-md text-sm font-medium hover:bg-accent-hover transition"
+                >
+                  View Details
+                </button>
+                <button
+                  onClick={() => setSelectedOrder(order)}
+                  className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-200 transition"
+                >
+                  Update Status
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden lg:block bg-white rounded-lg shadow-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-gray-50">

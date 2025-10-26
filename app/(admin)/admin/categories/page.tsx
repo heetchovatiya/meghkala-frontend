@@ -156,15 +156,15 @@ export default function AdminCategoriesPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-serif text-heading-color mb-8">Manage Categories & Subcategories</h1>
+      <h1 className="text-2xl sm:text-3xl font-serif text-heading-color mb-6 sm:mb-8">Manage Categories & Subcategories</h1>
       
       {/* Tab Navigation */}
       <div className="mb-6">
         <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
+          <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto">
             <button
               onClick={() => setActiveTab('categories')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                 activeTab === 'categories'
                   ? 'border-accent text-accent'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -174,7 +174,7 @@ export default function AdminCategoriesPage() {
             </button>
             <button
               onClick={() => setActiveTab('subcategories')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                 activeTab === 'subcategories'
                   ? 'border-accent text-accent'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -187,9 +187,9 @@ export default function AdminCategoriesPage() {
       </div>
 
       {activeTab === 'categories' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Add Category Form */}
-          <div className="md:col-span-1">
+          <div className="lg:col-span-1">
             <form onSubmit={handleAddCategory} className="bg-primary-bg p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold text-heading-color mb-4">Add New Category</h2>
                           <Input
@@ -240,7 +240,7 @@ export default function AdminCategoriesPage() {
             </form>
           </div>
           {/* Category List */}
-          <div className="md:col-span-2 bg-primary-bg p-6 rounded-lg shadow-md">
+          <div className="lg:col-span-2 bg-primary-bg p-4 sm:p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-heading-color mb-4">Existing Categories</h2>
             <div className="space-y-2">
               {categories.map(cat => (
@@ -274,11 +274,11 @@ export default function AdminCategoriesPage() {
       )}
 
       {activeTab === 'subcategories' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Add Subcategory Form */}
-          <div className="md:col-span-1">
-            <form onSubmit={handleAddSubcategory} className="bg-primary-bg p-6 rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold text-heading-color mb-4">Add New Subcategory</h2>
+          <div className="lg:col-span-1">
+            <form onSubmit={handleAddSubcategory} className="bg-primary-bg p-4 sm:p-6 rounded-lg shadow-md">
+              <h2 className="text-lg sm:text-xl font-semibold text-heading-color mb-4">Add New Subcategory</h2>
               <div className="mb-4">
                 <label htmlFor="parentCategory" className="block text-sm font-medium text-text-color mb-1">Parent Category</label>
                 <select
@@ -308,7 +308,7 @@ export default function AdminCategoriesPage() {
             </form>
           </div>
           {/* Subcategory List */}
-          <div className="md:col-span-2 bg-primary-bg p-6 rounded-lg shadow-md">
+          <div className="lg:col-span-2 bg-primary-bg p-4 sm:p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-heading-color mb-4">Existing Subcategories</h2>
             <div className="space-y-2">
               {subcategories.map(sub => {

@@ -69,7 +69,6 @@ export function MobileFilterSheet({ isOpen, onClose, categories }: MobileFilterS
                     <SearchBar />
                 </div> */}
                 <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-heading-color mb-4">Category</h3>
                     {/* ✅ Pass the 'categories' prop down to the final filter component */}
                     {/* Also pass the 'onClose' function so the sheet can close automatically */}
                     <ProductFilters categories={categories} onFilterChange={onClose} />

@@ -20,16 +20,6 @@ export function HeroSection() {
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6 text-center">
-        <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="mb-8"
-        >
-          <span className="inline-block px-6 py-3 bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-full border border-white/30">
-            Contemporary Collection
-          </span>
-        </motion.div>
         
         <motion.h1
           initial={{ y: 30, opacity: 0 }}

@@ -21,52 +21,45 @@ export default async function HomePage() {
       {/* Hero Section */}
       <HeroSection />
 
-      {/* Categories Section */}
-      <section className="py-20 bg-earth-50">
+      {/* Collections Section */}
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-heading-color mb-4">
-              Shop by Category
+              Find the perfect piece by exploring our curated collections
             </h2>
             <p className="text-lg text-text-color max-w-2xl mx-auto">
               Discover our carefully curated collections, each telling a unique story of craftsmanship
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {categories.slice(0, 4).map((category: any) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {categories.slice(0, 3).map((category: any) => (
               <Link
                 key={category._id}
                 href={`/products?category=${category._id}`}
-                className="group relative overflow-hidden rounded-2xl aspect-square transition-all duration-500 shadow-lg hover:shadow-2xl hover:-translate-y-2"
-                style={category.image ? { backgroundImage: `url(${category.image})` } : {}}
+                className="group relative overflow-hidden rounded-3xl aspect-[4/5] transition-all duration-500 shadow-xl hover:shadow-2xl hover:-translate-y-2"
               >
-                {/* Background Image or Fallback Gradient */}
-                {category.image ? (
-                  <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"></div>
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-earth-100 to-earth-200 hover:from-terracotta-100 hover:to-terracotta-200"></div>
-                )}
+                {/* Full Background Image */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-105"
+                  style={category.image ? { backgroundImage: `url(${category.image})` } : { backgroundImage: 'linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%)' }}
+                ></div>
                 
-                {/* Dark Overlay for Text Readability */}
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-all duration-500"></div>
+                {/* Gradient Overlay for Better Text Readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:from-black/70 group-hover:via-black/30 transition-all duration-500"></div>
                 
                 {/* Content */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <h3 className="text-xl font-semibold text-white group-hover:scale-110 transition-transform duration-300 mb-2 drop-shadow-lg">
+                <div className="absolute inset-0 flex items-end justify-center p-6 md:p-8">
+                  <div className="text-center w-full px-4">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white group-hover:scale-105 transition-transform duration-300 mb-3 drop-shadow-2xl leading-tight break-words">
                       {category.name}
                     </h3>
-                    <div className="w-8 h-0.5 bg-white mx-auto group-hover:w-12 transition-all duration-300"></div>
+                    <div className="w-12 h-0.5 bg-white mx-auto group-hover:w-16 transition-all duration-300"></div>
                   </div>
                 </div>
                 
-                {/* Decorative Elements - only show on gradient backgrounds */}
-                {!category.image && (
-                  <>
-                    <div className="absolute top-4 left-4 w-2 h-2 bg-terracotta-400 rounded-full opacity-60 group-hover:scale-150 transition-transform duration-300"></div>
-                    <div className="absolute bottom-4 right-4 w-1.5 h-1.5 bg-sage-400 rounded-full opacity-60 group-hover:scale-150 transition-transform duration-300"></div>
-                  </>
-                )}
+                {/* Hover Effect Overlay */}
+                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-all duration-500"></div>
               </Link>
             ))}
           </div>
@@ -117,9 +110,9 @@ export default async function HomePage() {
           {/* Horizontal Three-Column Layout */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {/* Free Shipping */}
-            <div className="text-center group">
+            <div className="text-center">
               <div className="mb-6">
-                <div className="w-16 h-16 bg-terracotta-100 rounded-xl flex items-center justify-center mx-auto shadow-sm group-hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+                <div className="w-16 h-16 bg-terracotta-100 rounded-xl flex items-center justify-center mx-auto shadow-sm">
                   <Truck className="text-terracotta-600" size={28} />
                 </div>
               </div>
@@ -128,9 +121,9 @@ export default async function HomePage() {
             </div>
             
             {/* Secure Payment */}
-            <div className="text-center group">
+            <div className="text-center">
               <div className="mb-6">
-                <div className="w-16 h-16 bg-terracotta-100 rounded-xl flex items-center justify-center mx-auto shadow-sm group-hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+                <div className="w-16 h-16 bg-terracotta-100 rounded-xl flex items-center justify-center mx-auto shadow-sm">
                   <Shield className="text-terracotta-600" size={28} />
                 </div>
               </div>
@@ -139,9 +132,9 @@ export default async function HomePage() {
             </div>
             
             {/* Handcrafted */}
-            <div className="text-center group">
+            <div className="text-center">
               <div className="mb-6">
-                <div className="w-16 h-16 bg-terracotta-100 rounded-xl flex items-center justify-center mx-auto shadow-sm group-hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+                <div className="w-16 h-16 bg-terracotta-100 rounded-xl flex items-center justify-center mx-auto shadow-sm">
                   <Heart className="text-terracotta-600" size={28} />
                 </div>
               </div>

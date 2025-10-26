@@ -92,26 +92,26 @@ function StatCard({
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-100">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-600 mb-1">{title}</p>
-          <p className="text-2xl font-bold text-gray-900">{formatValue(value)}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs sm:text-sm text-gray-600 mb-1 truncate">{title}</p>
+          <p className="text-lg sm:text-2xl font-bold text-gray-900">{formatValue(value)}</p>
           {growth !== undefined && (
-            <div className="flex items-center mt-2">
+            <div className="flex items-center mt-1 sm:mt-2">
               {growth >= 0 ? (
-                <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
+                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 mr-1 flex-shrink-0" />
               ) : (
-                <TrendingDown className="w-4 h-4 text-red-500 mr-1" />
+                <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 mr-1 flex-shrink-0" />
               )}
-              <span className={`text-sm ${growth >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              <span className={`text-xs sm:text-sm ${growth >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                 {Math.abs(growth).toFixed(1)}%
               </span>
-              <span className="text-xs text-gray-500 ml-1">vs last month</span>
+              <span className="text-xs text-gray-500 ml-1 hidden sm:inline">vs last month</span>
             </div>
           )}
         </div>
-        <div className={`${colorClasses[color as keyof typeof colorClasses]} text-white p-3 rounded-full`}>
+        <div className={`${colorClasses[color as keyof typeof colorClasses]} text-white p-2 sm:p-3 rounded-full flex-shrink-0`}>
           {icon}
         </div>
       </div>
@@ -160,21 +160,21 @@ function SimpleChart({ data, title, type = "line" }: { data: any[]; title: strin
 
 function TopSellingProducts({ products }: { products: Array<{ _id: string; title: string; totalSold: number; price: number }> }) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-100">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Selling Products</h3>
       <div className="space-y-3">
         {products.slice(0, 5).map((product, index) => (
           <div key={product._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-3">
+            <div className="flex items-center min-w-0 flex-1">
+              <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-3 flex-shrink-0">
                 {index + 1}
               </div>
-              <div>
-                <p className="font-medium text-gray-900">{product.title}</p>
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-gray-900 truncate">{product.title}</p>
                 <p className="text-sm text-gray-600">₹{product.price.toLocaleString()}</p>
               </div>
             </div>
-            <div className="text-right">
+            <div className="text-right flex-shrink-0 ml-2">
               <p className="font-semibold text-gray-900">{product.totalSold}</p>
               <p className="text-sm text-gray-600">sold</p>
             </div>
@@ -335,14 +335,14 @@ export default function AnalyticsDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatCard
           title="Total Revenue"
           value={data.revenue.total}
           growth={data.revenue.growth}
-          icon={<DollarSign className="w-6 h-6" />}
+          icon={<DollarSign className="w-5 h-5 sm:w-6 sm:h-6" />}
           color="green"
           format="currency"
         />
@@ -350,26 +350,26 @@ export default function AnalyticsDashboard() {
           title="Total Orders"
           value={data.orders.total}
           growth={data.orders.growth}
-          icon={<ShoppingCart className="w-6 h-6" />}
+          icon={<ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />}
           color="blue"
         />
         <StatCard
           title="Total Users"
           value={data.users.total}
           growth={data.users.growth}
-          icon={<Users className="w-6 h-6" />}
+          icon={<Users className="w-5 h-5 sm:w-6 sm:h-6" />}
           color="purple"
         />
         <StatCard
           title="Total Products"
           value={data.products.total}
-          icon={<Package className="w-6 h-6" />}
+          icon={<Package className="w-5 h-5 sm:w-6 sm:h-6" />}
           color="orange"
         />
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <SimpleChart 
           data={data.revenue.byMonth} 
           title="Revenue Trend (Last 6 Months)" 
@@ -381,7 +381,7 @@ export default function AnalyticsDashboard() {
       </div>
 
       {/* Analytics Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
         <OrderStatusChart statusData={data.orders.byStatus} />
         <TopSellingProducts products={data.products.topSelling} />
         <RecentOrders orders={data.recentActivity.orders} />
