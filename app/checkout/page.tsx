@@ -103,31 +103,44 @@ export default function CheckoutPage() {
 
   // The JSX is well-structured.
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-12">
-      <h1 className="text-4xl font-serif text-center mb-12">Checkout</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
-        <div className="lg:col-span-3">
-          <ShippingForm user={user} onFormChange={setShippingAddress} />
-           <div className="mt-8">
-                <h2 className="text-2xl font-serif text-heading-color mb-4">Payment Method</h2>
-                <div className="p-6 bg-secondary-bg/60 rounded-lg">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 sm:px-6 py-8">
+        <h1 className="text-3xl sm:text-4xl font-serif text-center mb-8 text-gray-900">Checkout</h1>
+        
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Left Column - Shipping Form */}
+            <div className="lg:col-span-2 space-y-8">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <ShippingForm user={user} onFormChange={setShippingAddress} />
+              </div>
+              
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 className="text-xl font-serif text-heading-color mb-4">Payment Method</h2>
+                <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="text-text-color">After confirming your order, you will be redirected to the payment page with instructions for our manual UPI payment process.</p>
                 </div>
               </div>
-        </div>
+            </div>
 
-        <div className="lg:col-span-2">
-          <div className="sticky top-28">
-            <OrderSummary /> 
-            <button 
-              onClick={handlePlaceOrder}
-              disabled={isSubmitting}
-              className="w-full mt-6 bg-accent text-white font-semibold rounded-md py-4 text-lg
-                         transition-all duration-300 ease-in-out hover:bg-accent-hover
-                         disabled:bg-accent/50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? "Processing..." : "Confirm & Proceed to Payment"}
-            </button>
+            {/* Right Column - Order Summary */}
+            <div className="lg:col-span-1">
+              <div className="lg:sticky lg:top-8">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <OrderSummary /> 
+                </div>
+                
+                <button 
+                  onClick={handlePlaceOrder}
+                  disabled={isSubmitting}
+                  className="w-full mt-6 bg-accent text-white font-semibold rounded-lg py-4 text-lg
+                             transition-all duration-300 ease-in-out hover:bg-accent-hover
+                             disabled:bg-accent/50 disabled:cursor-not-allowed shadow-lg"
+                >
+                  {isSubmitting ? "Processing..." : "Confirm & Proceed to Payment"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

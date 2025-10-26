@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ShoppingBag, User, Menu, X, LogOut, Search } from "lucide-react";
+import { ShoppingBag, User, Menu, X, LogOut, Search, ChevronDown } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,7 @@ export function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { itemCount } = useCart();
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
@@ -36,6 +37,23 @@ export function Navbar() {
       document.body.style.overflow = "auto";
     };
   }, [isMenuOpen]);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isUserMenuOpen && !(event.target as Element).closest('.user-menu-container')) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    if (isUserMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
 
   const navLinks = [
     { href: "/products", label: "Collection" },
@@ -118,10 +136,62 @@ export function Navbar() {
             )}
           </button>
           
-          {/* Profile Icon (desktop only) */}
-          <Link href="/my-profile" className="hidden lg:block text-text-color hover:text-heading-color">
-            <User size={24} />
-          </Link>
+          {/* Profile Dropdown (desktop only) */}
+          {isAuthenticated ? (
+            <div className="hidden lg:block relative user-menu-container">
+              <button 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center gap-2 text-text-color hover:text-heading-color transition-colors"
+              >
+                <User size={24} />
+                <ChevronDown size={16} className={`transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {/* User Dropdown Menu */}
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                  >
+                    <Link 
+                      href="/my-profile" 
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <User size={16} />
+                      My Profile
+                    </Link>
+                    <Link 
+                      href="/my-orders" 
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <ShoppingBag size={16} />
+                      My Orders
+                    </Link>
+                    <hr className="my-1" />
+                    <button 
+                      onClick={() => {
+                        logout();
+                        setIsUserMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      Logout
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <Link href="/login" className="hidden lg:block text-text-color hover:text-heading-color">
+              <User size={24} />
+            </Link>
+          )}
         </div>
       </nav>
 
@@ -221,6 +291,10 @@ export function Navbar() {
                     <Link href="/my-profile" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-3 rounded-md text-xl text-heading-color hover:bg-secondary-bg transition-colors">
                       <User size={24} />
                       <span>My Profile</span>
+                    </Link>
+                    <Link href="/my-orders" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-3 rounded-md text-xl text-heading-color hover:bg-secondary-bg transition-colors">
+                      <ShoppingBag size={24} />
+                      <span>My Orders</span>
                     </Link>
                     <button onClick={() => { logout(); setIsMenuOpen(false); }} className="w-full flex items-center gap-4 p-3 rounded-md text-xl text-red-500 hover:bg-red-100 transition-colors">
                       <LogOut size={24} />

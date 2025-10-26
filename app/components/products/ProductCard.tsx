@@ -83,18 +83,18 @@ export function ProductCard({ product }: ProductCardProps) {
     true;
 
   return (
-    <div className={`group bg-white rounded-3xl shadow-sm transition-all duration-500 overflow-hidden border ${
+    <article className={`group bg-white rounded-3xl shadow-sm transition-all duration-500 overflow-hidden border ${
       isOutOfStock 
         ? 'border-gray-200 opacity-75' 
         : 'border-gray-100 hover:border-gray-200 hover:shadow-xl'
-    }`}>
+    }`} itemScope itemType="https://schema.org/Product">
       {/* Product Image Container */}
       <div className="relative overflow-hidden">
-        <Link href={`/products/${product._id}`} className="block">
+        <Link href={`/products/${product._id}`} className="block" aria-label={`View ${product.title} product details`}>
           <div className="relative aspect-square w-full">
             <Image 
               src={displayImage} 
-              alt={product.title} 
+              alt={`${product.title} - Handcrafted ${product.category?.name || 'art piece'} by Meghkala`}
               fill 
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" 
               className="object-cover transition-transform duration-700 group-hover:scale-110" 
@@ -150,7 +150,7 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Product Info */}
       <div className="p-5 space-y-4">
         <Link href={`/products/${product._id}`}>
-          <h3 className="text-base font-semibold text-gray-900 line-clamp-2 hover:text-accent transition-colors leading-tight group-hover:text-accent">
+          <h3 className="text-base font-semibold text-gray-900 line-clamp-2 hover:text-accent transition-colors leading-tight group-hover:text-accent" itemProp="name">
             {product.title}
           </h3>
         </Link>
@@ -160,11 +160,21 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center gap-3">
             {hasDiscount && isDiscountActive ? (
               <>
-                <span className="text-xl font-bold text-gray-900">₹{product.price.toFixed(2)}</span>
+                <span className="text-xl font-bold text-gray-900" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                  <meta itemProp="price" content={product.price.toString()} />
+                  <meta itemProp="priceCurrency" content="INR" />
+                  <meta itemProp="availability" content={isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock"} />
+                  ₹{product.price.toFixed(2)}
+                </span>
                 <span className="text-sm text-gray-500 line-through">₹{product.originalPrice?.toFixed(2)}</span>
               </>
             ) : (
-              <span className="text-xl font-bold text-gray-900">₹{product.price.toFixed(2)}</span>
+              <span className="text-xl font-bold text-gray-900" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                <meta itemProp="price" content={product.price.toString()} />
+                <meta itemProp="priceCurrency" content="INR" />
+                <meta itemProp="availability" content={isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock"} />
+                ₹{product.price.toFixed(2)}
+              </span>
             )}
           </div>
         </div>
@@ -194,6 +204,6 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
         )}
       </div>
-    </div>
+    </article>
   );
 }

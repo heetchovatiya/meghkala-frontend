@@ -178,34 +178,38 @@ export function ShippingForm({ user, onFormChange }: ShippingFormProps) {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-serif text-heading-color mb-4">Shipping Address</h2>
+    <div className="space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <MapPin className="text-accent" size={24} />
+        <h2 className="text-2xl font-serif text-heading-color">Shipping Address</h2>
+      </div>
       
       {/* Saved Addresses List */}
       {addresses.length > 0 && !showNewAddressForm && (
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-heading-color mb-3">Select Address</h3>
-          <div className="space-y-3">
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-heading-color">Select Address</h3>
+          <div className="space-y-3 max-h-80 overflow-y-auto">
             {addresses.map((addr) => (
               <div
                 key={addr._id}
-                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                   selectedAddressId === addr._id
-                    ? 'border-accent bg-accent/5'
-                    : 'border-secondary-bg hover:border-accent/50'
+                    ? 'border-accent bg-accent/5 shadow-md'
+                    : 'border-gray-200 hover:border-accent/50 hover:shadow-sm'
                 }`}
                 onClick={() => handleAddressSelect(addr._id)}
               >
                 <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium text-heading-color">{addr.line1}</p>
-                      <p className="text-text-color">{addr.city}, {addr.postalCode}</p>
-                      <p className="text-text-color">{addr.country}</p>
-                      <p className="text-text-color">{addr.contactNumber}</p>
-                    </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-heading-color truncate">{addr.line1}</p>
+                    <p className="text-sm text-gray-600">{addr.city}, {addr.postalCode}</p>
+                    <p className="text-sm text-gray-600">{addr.country}</p>
+                    <p className="text-sm text-gray-600">{addr.contactNumber}</p>
+                  </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleDeleteAddress(addr._id); }}
-                    className="text-red-500 hover:text-red-700 p-1"
+                    className="text-red-500 hover:text-red-700 p-1 ml-2 flex-shrink-0"
+                    title="Delete address"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -216,7 +220,7 @@ export function ShippingForm({ user, onFormChange }: ShippingFormProps) {
           
           <button
             onClick={() => setShowNewAddressForm(true)}
-            className="mt-4 flex items-center gap-2 text-accent hover:text-accent-hover font-medium"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 text-accent hover:text-accent-hover font-medium py-2 px-4 border border-accent rounded-lg hover:bg-accent/5 transition-colors"
           >
             <Plus size={16} /> Add New Address
           </button>
@@ -225,33 +229,100 @@ export function ShippingForm({ user, onFormChange }: ShippingFormProps) {
 
       {/* New Address Form */}
       {showNewAddressForm && (
-        <div className="p-6 bg-secondary-bg/60 rounded-lg space-y-4">
-          <div className="flex items-center justify-between mb-2">
+        <div className="bg-gray-50 rounded-lg p-6 space-y-4">
+          <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-heading-color">
               {addresses.length > 0 ? 'Add New Address' : 'Enter Shipping Address'}
             </h3>
             {addresses.length > 0 && (
-              <button onClick={() => setShowNewAddressForm(false)} className="text-sm text-text-color hover:text-heading-color">
+              <button 
+                onClick={() => setShowNewAddressForm(false)} 
+                className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1 rounded-md hover:bg-gray-200 transition-colors"
+              >
                 Cancel
               </button>
             )}
           </div>
           
-          <Input id="contactNumber" name="contactNumber" label="Contact Number" type="tel" value={address.contactNumber} onChange={handleChange} maxLength={10} error={errors.contactNumber} required />
-          <Input id="street" name="street" label="Street Address" value={address.street} onChange={handleChange} error={errors.street} required />
-          <div className="grid grid-cols-2 gap-4">
-            <Input id="city" name="city" label="City" value={address.city} onChange={handleChange} error={errors.city} required />
-            <Input id="postalCode" name="postalCode" label="Postal Code" type="tel" value={address.postalCode} onChange={handleChange} maxLength={6} error={errors.postalCode} required />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
+              <Input 
+                id="contactNumber" 
+                name="contactNumber" 
+                label="Contact Number" 
+                type="tel" 
+                value={address.contactNumber} 
+                onChange={handleChange} 
+                maxLength={10} 
+                error={errors.contactNumber} 
+                required 
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Input 
+                id="street" 
+                name="street" 
+                label="Street Address" 
+                value={address.street} 
+                onChange={handleChange} 
+                error={errors.street} 
+                required 
+              />
+            </div>
+            <div>
+              <Input 
+                id="city" 
+                name="city" 
+                label="City" 
+                value={address.city} 
+                onChange={handleChange} 
+                error={errors.city} 
+                required 
+              />
+            </div>
+            <div>
+              <Input 
+                id="postalCode" 
+                name="postalCode" 
+                label="Postal Code" 
+                type="tel" 
+                value={address.postalCode} 
+                onChange={handleChange} 
+                maxLength={6} 
+                error={errors.postalCode} 
+                required 
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Input 
+                id="country" 
+                name="country" 
+                label="Country" 
+                value={address.country} 
+                onChange={handleChange} 
+                error={errors.country} 
+                required 
+              />
+            </div>
           </div>
-          <Input id="country" name="country" label="Country" value={address.country} onChange={handleChange} error={errors.country} required />
           
-          <button
-            onClick={handleSaveAddress}
-            disabled={isLoading}
-            className="w-full bg-accent text-white font-semibold rounded-md py-3 px-4 transition-all hover:bg-accent-hover disabled:bg-accent/50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Saving...' : 'Save Address'}
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <button
+              onClick={handleSaveAddress}
+              disabled={isLoading}
+              className="flex-1 bg-accent text-white font-semibold rounded-lg py-3 px-4 transition-all hover:bg-accent-hover disabled:bg-accent/50 disabled:cursor-not-allowed shadow-sm"
+            >
+              {isLoading ? 'Saving...' : 'Save Address'}
+            </button>
+            {addresses.length > 0 && (
+              <button
+                onClick={() => setShowNewAddressForm(false)}
+                className="flex-1 sm:flex-none bg-gray-200 text-gray-800 font-semibold rounded-lg py-3 px-4 transition-all hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

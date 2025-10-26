@@ -1,6 +1,31 @@
 // app/faq/page.tsx
 
 import { FAQ } from '@/components/common/FAQ';
+import { Metadata } from 'next';
+import { generateFAQStructuredData } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'FAQ - Frequently Asked Questions | Meghkala',
+  description: 'Find answers to common questions about our handcrafted products, shipping, returns, payment methods, and more at Meghkala.',
+  keywords: [
+    'FAQ',
+    'frequently asked questions',
+    'shipping information',
+    'return policy',
+    'payment methods',
+    'handcrafted products',
+    'customer support',
+    'Meghkala help'
+  ],
+  openGraph: {
+    title: 'FAQ - Frequently Asked Questions | Meghkala',
+    description: 'Find answers to common questions about our handcrafted products, shipping, returns, payment methods, and more at Meghkala.',
+    type: 'website',
+  },
+  alternates: {
+    canonical: 'https://meghkala.com/faq',
+  },
+};
 
 export default function FAQPage() {
   const faqItems = [
@@ -46,8 +71,20 @@ export default function FAQPage() {
     }
   ];
 
+  // Generate FAQ structured data
+  const faqStructuredData = generateFAQStructuredData(faqItems);
+
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-8 md:py-16">
+    <>
+      {/* FAQ Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqStructuredData)
+        }}
+      />
+      
+      <div className="container mx-auto px-4 sm:px-6 py-8 md:py-16">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-heading-color mb-4">
@@ -65,6 +102,7 @@ export default function FAQPage() {
           subtitle=""
         />
       </div>
-    </div>
+      </div>
+    </>
   );
 }
