@@ -4,7 +4,7 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/components/common/Logo";
-import { X, User, LogOut } from "lucide-react";
+import { X, User, LogOut, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
@@ -107,6 +107,14 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     >
                       <User size={24} />
                       <span>My Profile</span>
+                    </Link>
+                    <Link 
+                      href="/my-orders" 
+                      onClick={onClose} 
+                      className="flex items-center gap-3 text-lg font-medium text-heading-color hover:text-terracotta-600 transition-colors duration-300"
+                    >
+                      <ShoppingBag size={24} />
+                      <span>My Orders</span>
                     </Link>
                     <button 
                       onClick={() => { logout(); onClose(); }} 

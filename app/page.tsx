@@ -6,6 +6,43 @@ import { HeroSection } from '@/components/common/HeroSection';
 import { getFeaturedProducts, getCategories } from '@/lib/api';
 import Link from 'next/link';
 import { ArrowRight, Truck, Shield, Heart } from 'lucide-react';
+import { Metadata } from 'next';
+import { generateSEO, generateOrganizationStructuredData } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'Meghkala - Handcrafted Art & Home Decor | Premium Indian Handicrafts',
+  description: 'Discover exquisite handcrafted art pieces, home decor, and traditional Indian handicrafts at Meghkala. Premium quality, authentic craftsmanship, and unique designs for your home.',
+  keywords: [
+    'handcrafted art',
+    'Indian handicrafts',
+    'home decor',
+    'traditional art',
+    'premium handicrafts',
+    'art pieces',
+    'decorative items',
+    'handmade products',
+    'Indian art',
+    'cultural artifacts',
+    'buy handicrafts online',
+    'authentic Indian art',
+    'premium home decor'
+  ],
+  openGraph: {
+    title: 'Meghkala - Handcrafted Art & Home Decor | Premium Indian Handicrafts',
+    description: 'Discover exquisite handcrafted art pieces, home decor, and traditional Indian handicrafts at Meghkala. Premium quality, authentic craftsmanship, and unique designs for your home.',
+    images: ['/og-image.jpg'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Meghkala - Handcrafted Art & Home Decor | Premium Indian Handicrafts',
+    description: 'Discover exquisite handcrafted art pieces, home decor, and traditional Indian handicrafts at Meghkala. Premium quality, authentic craftsmanship, and unique designs for your home.',
+    images: ['/og-image.jpg'],
+  },
+  alternates: {
+    canonical: 'https://meghkala.com',
+  },
+};
 
 // This is also a Server Component. We can fetch data here as well.
 export default async function HomePage() {
@@ -16,8 +53,37 @@ export default async function HomePage() {
     getCategories(true) // Get only parent categories
   ]);
 
+  // Generate structured data
+  const organizationStructuredData = generateOrganizationStructuredData();
+  const homepageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Meghkala",
+    "url": "https://meghkala.com",
+    "description": "Premium handcrafted art pieces and home decor from authentic Indian artisans",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://meghkala.com/products?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <>
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationStructuredData)
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(homepageStructuredData)
+        }}
+      />
+      
       {/* Hero Section */}
       <HeroSection />
 

@@ -8,17 +8,84 @@ import { Product } from '@/components/products/ProductCard'; // Import our updat
 import { NotifyMeButton } from '@/components/products/NotifyMeButton';
 import Link from 'next/link';
 import { ArrowLeft, Star, Truck, Shield, RotateCcw } from 'lucide-react';
+import { Metadata } from 'next';
+import { generateProductSEO, generateBreadcrumbStructuredData } from '@/lib/seo';
 
 interface PageProps {
   params: { id: string };
 }
 
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  try {
+    const product = await getProductById(params.id);
+    const seo = generateProductSEO(product);
+    
+    return {
+      title: seo.title,
+      description: seo.description,
+      keywords: seo.keywords,
+      openGraph: {
+        title: seo.title,
+        description: seo.description,
+        images: [
+          {
+            url: product.images?.[0] || '/og-image.jpg',
+            width: 1200,
+            height: 630,
+            alt: product.title,
+          },
+        ],
+        type: 'website',
+        url: `https://meghkala.com/products/${params.id}`,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: seo.title,
+        description: seo.description,
+        images: [product.images?.[0] || '/og-image.jpg'],
+      },
+      alternates: {
+        canonical: `https://meghkala.com/products/${params.id}`,
+      },
+    };
+  } catch (error) {
+    return {
+      title: 'Product Not Found | Meghkala',
+      description: 'The requested product could not be found.',
+    };
+  }
+}
+
 export default async function ProductDetailPage({ params }: PageProps) {
   try {
     const product: any = await getProductById(params.id);
+    
+    // Generate structured data
+    const seo = generateProductSEO(product);
+    const breadcrumbData = generateBreadcrumbStructuredData([
+      { name: 'Home', url: '/' },
+      { name: 'Products', url: '/products' },
+      { name: product.category?.name || 'Category', url: `/products?category=${product.category?._id}` },
+      { name: product.title, url: `/products/${params.id}` }
+    ]);
 
     return (
-      <div className="container mx-auto px-4 sm:px-6 py-8 md:py-16">
+      <>
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(seo.structuredData)
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumbData)
+          }}
+        />
+        
+        <div className="container mx-auto px-4 sm:px-6 py-8 md:py-16">
         <div className="mb-8">
           <Link href="/products" className="inline-flex items-center gap-2 text-text-color hover:text-heading-color transition-colors">
             <ArrowLeft size={18} />
@@ -192,6 +259,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           totalReviews={product.totalReviews || 0}
         />
       </div>
+      </>
     );
   } catch (error) {
     console.error("Failed to fetch product details:", error);
