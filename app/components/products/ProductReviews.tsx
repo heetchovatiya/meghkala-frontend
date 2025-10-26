@@ -157,25 +157,25 @@ export function ProductReviews({ productId, averageRating, totalReviews }: Produ
 
   return (
     <div className="mt-12">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-        <div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">Customer Reviews</h3>
-          <div className="flex items-center space-x-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 sm:mb-8">
+        <div className="mb-4 lg:mb-0">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Customer Reviews</h3>
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
             <div className="flex items-center space-x-2">
               {renderStars(Math.round(averageRating))}
-              <span className="text-lg font-semibold text-gray-900">
+              <span className="text-base sm:text-lg font-semibold text-gray-900">
                 {averageRating.toFixed(1)}
               </span>
             </div>
-            <span className="text-gray-500">({totalReviews} reviews)</span>
+            <span className="text-sm sm:text-base text-gray-500">({totalReviews} reviews)</span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-4 mt-4 md:mt-0">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm w-full sm:w-auto"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -187,6 +187,7 @@ export function ProductReviews({ productId, averageRating, totalReviews }: Produ
             <Button
               onClick={() => setShowReviewForm(true)}
               size="sm"
+              className="w-full sm:w-auto"
             >
               Write Review
             </Button>
@@ -196,8 +197,8 @@ export function ProductReviews({ productId, averageRating, totalReviews }: Produ
 
       {/* Review Form */}
       {showReviewForm && (
-        <div className="bg-gray-50 p-6 rounded-lg mb-8">
-          <h4 className="text-lg font-semibold mb-4">
+        <div className="bg-gray-50 p-4 sm:p-6 rounded-lg mb-6 sm:mb-8">
+          <h4 className="text-base sm:text-lg font-semibold mb-4">
             {editingReview ? 'Edit Review' : 'Write a Review'}
           </h4>
           <form onSubmit={handleSubmitReview} className="space-y-4">
@@ -205,9 +206,11 @@ export function ProductReviews({ productId, averageRating, totalReviews }: Produ
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Rating
               </label>
-              {renderStars(reviewForm.rating, true, (rating) =>
-                setReviewForm({ ...reviewForm, rating })
-              )}
+              <div className="flex justify-center sm:justify-start">
+                {renderStars(reviewForm.rating, true, (rating) =>
+                  setReviewForm({ ...reviewForm, rating })
+                )}
+              </div>
             </div>
 
             <Input
@@ -227,20 +230,21 @@ export function ProductReviews({ productId, averageRating, totalReviews }: Produ
                 value={reviewForm.comment}
                 onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                 placeholder="Tell us about your experience with this product"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 rows={4}
                 required
               />
             </div>
 
-            <div className="flex space-x-4">
-              <Button type="submit" size="sm">
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+              <Button type="submit" size="sm" className="w-full sm:w-auto">
                 {editingReview ? 'Update Review' : 'Submit Review'}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
+                className="w-full sm:w-auto"
                 onClick={() => {
                   setShowReviewForm(false);
                   setEditingReview(null);
@@ -267,61 +271,65 @@ export function ProductReviews({ productId, averageRating, totalReviews }: Produ
           </div>
         ) : (
           reviews.map((review) => (
-            <div key={review._id} className="border-b border-gray-200 pb-6">
+            <div key={review._id} className="border-b border-gray-200 pb-4 sm:pb-6">
               <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-medium text-gray-600">
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs sm:text-sm font-medium text-gray-600">
                       {review.user.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <div>
-                    <p className="font-medium text-gray-900">{review.user.name}</p>
-                    <div className="flex items-center space-x-2">
-                      {renderStars(review.rating)}
-                      <span className="text-sm text-gray-500">
-                        {new Date(review.createdAt).toLocaleDateString()}
-                      </span>
-                      {review.isVerified && (
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                          Verified Purchase
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{review.user.name}</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                      <div className="flex items-center space-x-1">
+                        {renderStars(review.rating)}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs sm:text-sm text-gray-500">
+                          {new Date(review.createdAt).toLocaleDateString()}
                         </span>
-                      )}
+                        {review.isVerified && (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                            Verified
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {isAuthenticated && (
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 flex-shrink-0 ml-2">
                     <button
                       onClick={() => handleEditReview(review)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-gray-400 hover:text-gray-600 p-1"
                     >
-                      <Edit3 size={16} />
+                      <Edit3 size={14} />
                     </button>
                     <button
                       onClick={() => handleDeleteReview(review._id)}
-                      className="text-gray-400 hover:text-red-600"
+                      className="text-gray-400 hover:text-red-600 p-1"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 )}
               </div>
 
-              <h5 className="font-medium text-gray-900 mb-2">{review.title}</h5>
-              <p className="text-gray-700">{review.comment}</p>
+              <h5 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">{review.title}</h5>
+              <p className="text-gray-700 text-sm sm:text-base leading-relaxed">{review.comment}</p>
             </div>
           ))
         )}
 
         {allReviews.length > 2 && (
-          <div className="text-center">
+          <div className="text-center mt-6">
             {!showAllReviews ? (
               <Button
                 variant="outline"
                 onClick={handleViewMore}
-                className="bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200 rounded-3xl px-6 py-2"
+                className="bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200 rounded-3xl px-4 sm:px-6 py-2 text-sm sm:text-base w-full sm:w-auto"
               >
                 View More Reviews
               </Button>
@@ -329,7 +337,7 @@ export function ProductReviews({ productId, averageRating, totalReviews }: Produ
               <Button
                 variant="outline"
                 onClick={handleViewLess}
-                className="bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200 rounded-3xl px-6 py-2"
+                className="bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200 rounded-3xl px-4 sm:px-6 py-2 text-sm sm:text-base w-full sm:w-auto"
               >
                 View Less
               </Button>

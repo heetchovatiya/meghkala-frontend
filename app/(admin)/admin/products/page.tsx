@@ -183,18 +183,78 @@ export default function AdminProductsPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-serif text-heading-color">Manage Products</h1>
-        <button onClick={() => handleOpenModal()} className="bg-accent text-white font-semibold py-2 px-4 rounded-md hover:bg-accent-hover transition">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl sm:text-3xl font-serif text-heading-color">Manage Products</h1>
+        <button onClick={() => handleOpenModal()} className="bg-accent text-white font-semibold py-2 px-4 rounded-md hover:bg-accent-hover transition w-full sm:w-auto">
           + Add New Product
         </button>
       </div>
       
-      <div className="bg-primary-bg rounded-lg shadow-md overflow-x-auto">
+      {/* Mobile Card View */}
+      <div className="block lg:hidden space-y-4">
+        {Array.isArray(products) && products.length > 0 ? products.map(product => (
+          <div key={product._id} className="bg-primary-bg rounded-lg shadow-md p-4">
+            <div className="flex gap-4">
+              <Image 
+                src={product.images?.[0] || '/placeholder-product.jpg'} 
+                alt={product.title} 
+                width={80} 
+                height={80} 
+                className="rounded-md object-cover bg-secondary-bg flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-medium text-heading-color truncate">{product.title}</h3>
+                <p className="text-sm text-gray-600">SKU: {product.sku || 'N/A'}</p>
+                <p className="text-sm text-gray-600">{product.category?.name || 'N/A'}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-lg font-semibold text-accent">₹{product.price}</span>
+                  {(product as any).hasDiscount && (
+                    <span className="text-sm text-green-600">
+                      -{(product as any).discountPercentage}%
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className={`px-2 py-1 rounded-full text-xs ${
+                    product.availability === 'IN_STOCK' 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {product.availability}
+                  </span>
+                  {product.isFeatured && (
+                    <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                      Featured
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => handleOpenModal(product)}
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(product._id, product.title)}
+                    className="text-red-600 hover:text-red-800 text-sm font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )) : (
+          <div className="text-center py-8 text-gray-500">No products found</div>
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden lg:block bg-primary-bg rounded-lg shadow-md overflow-x-auto">
         <table className="w-full text-left">
           <thead className="bg-secondary-bg/60">
             <tr>
-              {/* ✅ UPDATED TABLE HEADERS */}
               <th className="p-4 font-semibold">Image</th>
               <th className="p-4 font-semibold">Name</th>
               <th className="p-4 font-semibold">SKU</th>
